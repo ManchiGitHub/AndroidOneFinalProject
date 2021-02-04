@@ -10,7 +10,9 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -18,7 +20,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     private Player player;
 
-    private ArrayList<GameObject> gameObjects;
+    private List<GameObject> gameObjects;
     private Random random;
 
     private float playerYPosition;
@@ -36,7 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         player = new Player(playerXPosition, playerYPosition, playerSpeed);
 
-        gameObjects = new ArrayList<>();
+        gameObjects = new CopyOnWriteArrayList<GameObject>();
 
         gameThread = new GameThread(this);
 
@@ -90,14 +92,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void run() {
                 super.run();
-                synchronized (gameObjects) {
-                    while (gameThread.isRunning()) {
-                        gameObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                while (gameThread.isRunning()) {
+                    gameObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -106,14 +106,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void run() {
                 super.run();
-                synchronized (gameObjects) {
-                    while (gameThread.isRunning()) {
-                        gameObjects.add(SupplyFactory.createSupply(eSupplyType.randomSupply(), GameView.this));
-                        try {
-                            Thread.sleep(25000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                while (gameThread.isRunning()) {
+                    gameObjects.add(SupplyFactory.createSupply(eSupplyType.randomSupply(), GameView.this));
+                    try {
+                        Thread.sleep(25000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
