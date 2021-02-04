@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 public class MainActivity extends AppCompatActivity {
 
     static int SCREEN_WIDTH, SCREEN_HEIGHT;
-
+// comment by amit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
