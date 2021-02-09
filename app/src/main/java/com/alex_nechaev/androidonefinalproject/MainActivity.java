@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
         SCREEN_WIDTH = displayMetrics.widthPixels;
         Bitmaps bitmaps = new Bitmaps(getResources());
 
-
-
         setContentView(new GameView(MainActivity.this));
     }
 }

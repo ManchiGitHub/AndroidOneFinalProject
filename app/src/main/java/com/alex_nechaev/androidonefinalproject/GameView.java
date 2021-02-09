@@ -3,10 +3,12 @@ package com.alex_nechaev.androidonefinalproject;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private List<GameObject> gameObjects;
     private Random random;
+    GameObject da;
 
     private float playerYPosition;
     private float playerXPosition;
@@ -39,6 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         player = new Player(playerXPosition, playerYPosition, playerSpeed);
 
         gameObjects = new CopyOnWriteArrayList<GameObject>();
+        da = new MathafixAlien(MainActivity.SCREEN_WIDTH/2,MainActivity.SCREEN_HEIGHT/2,0);
 
         gameThread = new GameThread(this);
 
@@ -50,10 +54,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         int e = event.getActionMasked();
 
+        float fixedEventX = (event.getX()+40);
+        float fixedEventY = (event.getY()+150);
+
+        float expendLeftBorder = (player.getLeftBorder()-100);
+        float expendRightBorder = (player.getRightBorder()+100);
+        float expendTopBorder = (player.getTopBorder()-100);
+        float expendBottomBorder = (player.getBottomBorder()+100);
+
         switch (e) {
             case MotionEvent.ACTION_DOWN:
-                return true;
+                return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
+
                 playerXPosition = event.getX();
                 playerYPosition = event.getY();
                 break;
@@ -69,15 +82,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         synchronized (holder) {
             player.move(playerXPosition, playerYPosition);
 
-            for (GameObject go : gameObjects) {
-                go.move();
-                player.isCollision(go);
-            }
+//            for (GameObject go : gameObjects) {
+//                go.move();
+//                player.isCollision(go);
+//            }
+
+            player.isCollision(da);
+
             if (canvas != null) {
                 canvas.drawColor(Color.YELLOW);
-                for (GameObject go : gameObjects) {
-                    canvas.drawBitmap(go.getPlayerBitmap(), go.getXPosition(), go.getYPosition(), null);
-                }
+
+//                for (GameObject go : gameObjects) {
+//                    if(go != null) {
+//                        canvas.drawBitmap(go.getPlayerBitmap(), go.getXPosition(), go.getYPosition(), null);
+//                    }
+//                }
+                canvas.drawBitmap(da.getPlayerBitmap(), da.getXPosition(), da.getYPosition(), null);
                 canvas.drawBitmap(player.getPlayerBitmap(), player.getXPosition() - player.getSpriteWidth() / 2, player.getYPosition() - player.getSpriteHeight() / 2, null);
             }
         }
@@ -88,34 +108,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.setRunning(true);
         gameThread.start();
 
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                while (gameThread.isRunning()) {
-                    gameObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                while (gameThread.isRunning()) {
-                    gameObjects.add(SupplyFactory.createSupply(eSupplyType.randomSupply(), GameView.this));
-                    try {
-                        Thread.sleep(25000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
+//                while (gameThread.isRunning()) {
+//                    gameObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }.start();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
+//                while (gameThread.isRunning()) {
+//                    gameObjects.add(SupplyFactory.createSupply(eSupplyType.randomSupply(), GameView.this));
+//                    try {
+//                        Thread.sleep(25000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }.start();
     }
 
     @Override

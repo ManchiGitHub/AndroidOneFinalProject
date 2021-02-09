@@ -1,6 +1,8 @@
 package com.alex_nechaev.androidonefinalproject;
 
 
+import android.util.Log;
+
 public class DuckAlien extends GameObject {
 
     int moves = 0;
@@ -9,21 +11,25 @@ public class DuckAlien extends GameObject {
     public DuckAlien(float xPosition, float yPosition, int speed) {
         super(Bitmaps.duckAlienImg, xPosition, yPosition, speed);
     }
-    
+
+    @Override
     public float getRightBorder() {
-        return getXPosition() + getSpriteWidth();
+        return super.getRightBorder()+60;
     }
 
+    @Override
     public float getLeftBorder() {
-        return getXPosition() + 40;
+        return super.getLeftBorder()+60;
     }
 
+    @Override
     public float getTopBorder() {
-        return getYPosition();
+        return super.getTopBorder()-200;
     }
 
+    @Override
     public float getBottomBorder() {
-        return getYPosition() + getSpriteHeight();
+        return super.getBottomBorder()+100;
     }
 
     @Override
@@ -40,5 +46,6 @@ public class DuckAlien extends GameObject {
         }
         setYPosition(getYPosition()+(float)newSpeed);
         moves++;
+        super.move();
     }
 }

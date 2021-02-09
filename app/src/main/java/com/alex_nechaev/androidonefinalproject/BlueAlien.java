@@ -26,21 +26,7 @@ public class BlueAlien extends GameObject{
         }
         setYPosition(getYPosition()+speed);
         moves++;
-    }
 
-    public float getRightBorder(){
-        return getXPosition()+getSpriteWidth();
-    }
-
-    public float getLeftBorder(){
-        return getXPosition()+40;
-    }
-
-    public float getTopBorder(){
-        return getYPosition();
-    }
-
-    public float getBottomBorder(){
-        return getYPosition()+getSpriteHeight();
+        super.move();
     }
 }

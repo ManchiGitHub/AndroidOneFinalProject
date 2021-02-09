@@ -1,6 +1,7 @@
 package com.alex_nechaev.androidonefinalproject;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.util.Log;
 
 public class Player extends GameObject {
@@ -38,38 +39,19 @@ public class Player extends GameObject {
         return characterBitmap.getHeight();
     }
 
-    @Override
-    public void move() {
-
-    }
-
     public float getSpriteWidth() {
         return characterBitmap.getWidth();
     }
 
     @Override
-    public float getRightBorder() {
-        return super.getRightBorder();
-    }
+    public void move() {
 
-    @Override
-    public float getLeftBorder() {
-        return super.getLeftBorder();
-    }
-
-    @Override
-    public float getTopBorder() {
-        return super.getTopBorder();
-    }
-
-    @Override
-    public float getBottomBorder() {
-        return super.getBottomBorder();
     }
 
     public void move(float x, float y) {
         this.xPosition = x;
         this.yPosition = y;
+        super.rect.set((int) xPosition, (int) yPosition, (int) xPosition + characterBitmap.getWidth(), (int) yPosition + characterBitmap.getHeight());
     }
 
 
