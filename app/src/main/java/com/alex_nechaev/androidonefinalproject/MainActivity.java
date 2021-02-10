@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(MainActivity.this, "Resume", Toast.LENGTH_SHORT).show();
-                        onResume();
+                        gameView.setPauseButtonPressed(false);
                     }
                 });
                 builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
@@ -90,17 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        setContentView(gameLayout);
         Log.d("STATE", "onCreate: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
+        setContentView(gameLayout);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         gameView.pause();
-        gameView.setPauseButtonPressed(true);
         builder.show();
         Log.d("STATE", "onPause: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
     }
 
     @Override
@@ -108,11 +109,28 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         gameView.resume();
         Log.d("STATE", "onResume: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Log.d("STATE", "onStop: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("STATE", "onStart: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("STATE", "onRestart: ");
+        Log.d("STATE", "pauseBtn: "+gameView.isPauseButtonPressed());
+
     }
 }

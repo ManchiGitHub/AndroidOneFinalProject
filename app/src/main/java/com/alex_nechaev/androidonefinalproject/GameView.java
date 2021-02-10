@@ -31,15 +31,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     long enemyTimer, supplyTimer;
 
-//    boolean isPause = false;
-
     private float playerYPosition;
     private float playerXPosition;
     private Player player;
 
     private List<GameObject> enemyObjects;
     private List<GameObject> supplyObjects;
-    private boolean[] hearts = {true, true, true};
     private Random random;
 
 
@@ -109,7 +106,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         float fixedEventX = (event.getX() + 40);
         float fixedEventY = (event.getY() + 150);
-
         float expendLeftBorder = (player.getLeftBorder() - 100);
         float expendRightBorder = (player.getRightBorder() + 100);
         float expendTopBorder = (player.getTopBorder() - 100);
@@ -122,7 +118,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_MOVE:
                 playerXPosition = event.getX();
                 playerYPosition = event.getY();
-                resumeOnPause();
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -138,7 +133,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if(isPauseButtonPressed){
                 if (canvas != null) {
                     canvas.drawColor(Color.YELLOW);
-
                     for (GameObject so : supplyObjects) {
                         so.draw(canvas);
                     }
@@ -149,7 +143,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }else{
                 player.move(playerXPosition, playerYPosition);
-
                 for (GameObject so : supplyObjects) {
                     so.move();
                     if (player.isCollision(so)) {
@@ -167,10 +160,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         enemyObjects.remove(eo);
                     }
                 }
-
                 if (canvas != null) {
                     canvas.drawColor(Color.YELLOW);
-
                     for (GameObject so : supplyObjects) {
                         so.draw(canvas);
                     }
@@ -186,11 +177,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-
     private void removeHeart() {
     }
 
-    private void addHeart() {
+    private void addHeart(){
 
     }
 
@@ -220,13 +210,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void pause() {
+        isPauseButtonPressed = true;
         try {
             if (gameThread.getRunning()) {
                 Log.d("STATE", "onPause - GAME VIEW ");
                 gameThread.setRunning(false);
                 gameThread.join();
-//                isPause = true;
-                isPauseButtonPressed = true;
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -236,17 +225,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void resume() {
         if (isPauseButtonPressed) {
             gameThread = new GameThread(this);
-//            isPause = false;
-            isPauseButtonPressed = false;
         }
     }
 
     public void resumeOnPause() {
-        if (!isPauseButtonPressed) {
             resume();
             surfaceCreated(getHolder());
-        }
-
     }
 
 
