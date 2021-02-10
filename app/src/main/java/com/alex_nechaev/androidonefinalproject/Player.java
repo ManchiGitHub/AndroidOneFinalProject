@@ -11,7 +11,7 @@ public class Player extends GameObject {
         super(Bitmaps.playerImg, xPosition, yPosition, speed);
     }
 
-    public Bitmap getPlayerBitmap() {
+    public Bitmap getBitmap() {
         return characterBitmap;
     }
 

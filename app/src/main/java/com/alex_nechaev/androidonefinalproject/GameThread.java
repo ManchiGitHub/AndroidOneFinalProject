@@ -16,7 +16,7 @@ public class GameThread extends Thread{
         this.isRunning = running;
     }
 
-    public boolean isRunning() {
+    public boolean getRunning() {
         return isRunning;
     }
 
@@ -28,6 +28,7 @@ public class GameThread extends Thread{
             try{
                 canvas= gameView.getHolder().lockCanvas();
                 synchronized (gameView.getHolder()){
+                    gameView.addGameObjects();
                     gameView.onDraw(canvas);
                 }
             }finally {
@@ -38,3 +39,5 @@ public class GameThread extends Thread{
         }
     }
 }
+
+
