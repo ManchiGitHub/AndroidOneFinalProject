@@ -1,6 +1,7 @@
 package com.alex_nechaev.androidonefinalproject;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -65,6 +66,10 @@ public class GameObject {
 
     public float getSpriteHeight() {
         return characterBitmap.getHeight();
+    }
+
+    public void draw(Canvas canvas){
+        canvas.drawBitmap(characterBitmap, getXPosition(), getYPosition(), null);
     }
 
     public void move() {

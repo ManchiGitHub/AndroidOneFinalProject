@@ -1,5 +1,7 @@
 package com.alex_nechaev.androidonefinalproject;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,6 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 
@@ -20,11 +24,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final int MAX_HEARTS = 3;
 
     private SurfaceHolder holder;
+
+    private volatile boolean isPauseButtonPressed;
+
     private GameThread gameThread;
 
     long enemyTimer, supplyTimer;
 
-    boolean isPause = false;
+//    boolean isPause = false;
 
     private float playerYPosition;
     private float playerXPosition;
@@ -32,7 +39,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private List<GameObject> enemyObjects;
     private List<GameObject> supplyObjects;
-    private boolean[] hearts = {true,true,true};
+    private boolean[] hearts = {true, true, true};
     private Random random;
 
 
@@ -40,8 +47,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         //Player values initiation
-
         enemyTimer = supplyTimer = System.currentTimeMillis();
+        isPauseButtonPressed = false;
 
         playerYPosition = MainActivity.SCREEN_HEIGHT - (MainActivity.SCREEN_HEIGHT / 4);
         playerXPosition = MainActivity.SCREEN_WIDTH / 2;
@@ -51,7 +58,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemyObjects = new CopyOnWriteArrayList<GameObject>();
         supplyObjects = new CopyOnWriteArrayList<GameObject>();
 
-
         random = new Random();
 
         gameThread = new GameThread(this);
@@ -60,12 +66,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         holder.addCallback(this);
     }
 
+    public boolean isPauseButtonPressed() {
+        return isPauseButtonPressed;
+    }
+
+    public void setPauseButtonPressed(boolean pauseButtonPressed) {
+        isPauseButtonPressed = pauseButtonPressed;
+    }
+
+    public GameThread getGameThread() {
+        return gameThread;
+    }
+
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        if(!isPause) {
-            gameThread.setRunning(true);
-            gameThread.start();
-        }
+        gameThread.setRunning(true);
+        gameThread.start();
     }
 
     @Override
@@ -91,26 +107,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         int e = event.getActionMasked();
 
-        float fixedEventX = (event.getX()+40);
-        float fixedEventY = (event.getY()+150);
+        float fixedEventX = (event.getX() + 40);
+        float fixedEventY = (event.getY() + 150);
 
-        float expendLeftBorder = (player.getLeftBorder()-100);
-        float expendRightBorder = (player.getRightBorder()+100);
-        float expendTopBorder = (player.getTopBorder()-100);
-        float expendBottomBorder = (player.getBottomBorder()+100);
+        float expendLeftBorder = (player.getLeftBorder() - 100);
+        float expendRightBorder = (player.getRightBorder() + 100);
+        float expendTopBorder = (player.getTopBorder() - 100);
+        float expendBottomBorder = (player.getBottomBorder() + 100);
 
         switch (e) {
             case MotionEvent.ACTION_DOWN:
-                if(event.getX() <= 200 && event.getY() <= 200){
-                    Log.d("TAG", "onTouchEvent: ");
-                    pause();
-                }
+
                 return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
-
                 playerXPosition = event.getX();
                 playerYPosition = event.getY();
-                resume();
+                resumeOnPause();
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -122,48 +134,78 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     protected void onDraw(Canvas canvas) {
         synchronized (holder) {
-            player.move(playerXPosition, playerYPosition);
 
-            for (GameObject so : supplyObjects) {
-                so.move();
-                if(player.isCollision(so)){
-                    supplyObjects.remove(so);
-                }
-            }
-            for (GameObject eo : enemyObjects) {
-                eo.move();
-                if(player.isCollision(eo)){
-                    enemyObjects.remove(eo);
-                }
-            }
+            if(isPauseButtonPressed){
+                if (canvas != null) {
+                    canvas.drawColor(Color.YELLOW);
 
-            if (canvas != null) {
-                canvas.drawColor(Color.YELLOW);
+                    for (GameObject so : supplyObjects) {
+                        so.draw(canvas);
+                    }
+                    for (GameObject eo : enemyObjects) {
+                        eo.draw(canvas);
+                    }
+                    player.draw(canvas);
+                }
+            }else{
+                player.move(playerXPosition, playerYPosition);
 
                 for (GameObject so : supplyObjects) {
-                    drawDynamicObject(canvas,so);
+                    so.move();
+                    if (player.isCollision(so)) {
+                        if (so instanceof Heart) {
+                            addHeart();
+                        }
+
+                        supplyObjects.remove(so);
+                    }
                 }
                 for (GameObject eo : enemyObjects) {
-                    drawDynamicObject(canvas,eo);
+                    eo.move();
+                    if (player.isCollision(eo)) {
+                        removeHeart();
+                        enemyObjects.remove(eo);
+                    }
                 }
-                canvas.drawBitmap(player.getBitmap(), player.getXPosition() - player.getSpriteWidth() / 2, player.getYPosition() - player.getSpriteHeight() / 2, null);
+
+                if (canvas != null) {
+                    canvas.drawColor(Color.YELLOW);
+
+                    for (GameObject so : supplyObjects) {
+                        so.draw(canvas);
+                    }
+                    for (GameObject eo : enemyObjects) {
+                        eo.draw(canvas);
+                    }
+                    player.draw(canvas);
+                }
             }
+
+
         }
+
     }
 
-    private void drawDynamicObject(Canvas canvas, GameObject so) {
-        canvas.drawBitmap(so.getBitmap(), so.getXPosition(), so.getYPosition(), null);
+
+    private void removeHeart() {
+    }
+
+    private void addHeart() {
+
     }
 
 
     public void addGameObjects() {
-        addEnemyObject();
-        addSupplyObject();
+        if (!isPauseButtonPressed) {
+            addEnemyObject();
+            addSupplyObject();
+        }
+
     }
 
     private void addSupplyObject() {
         long currentSupplyTimer = System.currentTimeMillis();
-        if(currentSupplyTimer-supplyTimer > 12000){
+        if (currentSupplyTimer - supplyTimer > 12000) {
             supplyObjects.add(SupplyFactory.createSupply(eSupplyType.randomSupply(), GameView.this));
             supplyTimer = System.currentTimeMillis();
         }
@@ -171,7 +213,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if(currentEnemyTimer-enemyTimer > 3000){
+        if (currentEnemyTimer - enemyTimer > 2500) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
             enemyTimer = System.currentTimeMillis();
         }
@@ -179,11 +221,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void pause() {
         try {
-            if(gameThread.getRunning()) {
+            if (gameThread.getRunning()) {
                 Log.d("STATE", "onPause - GAME VIEW ");
                 gameThread.setRunning(false);
                 gameThread.join();
-                isPause = true;
+//                isPause = true;
+                isPauseButtonPressed = true;
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -191,11 +234,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void resume() {
-        if(isPause){
-            gameThread=new GameThread(this);
-            surfaceCreated(getHolder());
-            isPause = false;
+        if (isPauseButtonPressed) {
+            gameThread = new GameThread(this);
+//            isPause = false;
+            isPauseButtonPressed = false;
         }
+    }
+
+    public void resumeOnPause() {
+        if (!isPauseButtonPressed) {
+            resume();
+            surfaceCreated(getHolder());
+        }
+
     }
 
 

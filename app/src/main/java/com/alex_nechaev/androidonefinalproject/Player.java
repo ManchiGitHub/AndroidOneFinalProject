@@ -1,6 +1,7 @@
 package com.alex_nechaev.androidonefinalproject;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -41,6 +42,11 @@ public class Player extends GameObject {
 
     public float getSpriteWidth() {
         return characterBitmap.getWidth();
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(characterBitmap, getXPosition() - getSpriteWidth() / 2, getYPosition() - getSpriteHeight() / 2, null);
     }
 
     @Override
