@@ -21,7 +21,7 @@ public class BlueAlien extends GameObject{
                 setXPosition(getXPosition()-7);
         }
         if(right){
-            if(getRightBorder() < MainActivity.SCREEN_WIDTH)
+            if(getRightBorder() < GameActivity.SCREEN_WIDTH)
                 setXPosition(getXPosition()+7);
         }
         setYPosition(getYPosition()+speed);

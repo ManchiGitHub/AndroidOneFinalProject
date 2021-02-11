@@ -10,12 +10,12 @@ public class GreenAlien extends GameObject {
     }
     @Override
     public void move() {
-        if (direction && getRightBorder() < MainActivity.SCREEN_WIDTH) {
+        if (direction && getRightBorder() < GameActivity.SCREEN_WIDTH) {
             setXPosition(getXPosition() + 10);
         } else if (!direction && getLeftBorder() > 0) {
             setXPosition(getXPosition() - 10);
         }
-        if (getRightBorder() >= MainActivity.SCREEN_WIDTH) {
+        if (getRightBorder() >= GameActivity.SCREEN_WIDTH) {
             direction = false;
         } else if (getLeftBorder() <= 0) {
             direction = true;
