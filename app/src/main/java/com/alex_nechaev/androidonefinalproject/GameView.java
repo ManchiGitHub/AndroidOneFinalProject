@@ -2,7 +2,7 @@ package com.alex_nechaev.androidonefinalproject;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -16,9 +16,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final int PLAYER_SPEED = 15;
+    private final int BULLET_SPEED = 50;
     private final int MAX_HEARTS = 3;
-    long enemyTimer, heartTimer, shieldTimer, coinTimer;
+
+    private final int BACKGROUND_SPEED = 80;
+    Paint alphaPaint;
+    private int yTransition;
+
+    long enemyTimer, heartTimer, shieldTimer, coinTimer, bulletTimer;
     private Random random;
 
     private SurfaceHolder holder;
@@ -34,9 +39,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> heartObjects;
     private List<GameObject> shieldObjects;
     private List<GameObject> coinObjects;
+    private List<GameObject> bullets;
 
     private int heartIndex = MAX_HEARTS;
-
 
     public GameView(Context context) {
         super(context);
@@ -48,12 +53,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         playerYPosition = GameActivity.SCREEN_HEIGHT - (GameActivity.SCREEN_HEIGHT / 4);
         playerXPosition = GameActivity.SCREEN_WIDTH / 2;
 
-        player = new Player(playerXPosition, playerYPosition, PLAYER_SPEED);
+        player = new Player(playerXPosition, playerYPosition, 0);
+        alphaPaint = new Paint();
+        alphaPaint.setAlpha(100);
 
         enemyObjects = new CopyOnWriteArrayList<GameObject>();
         heartObjects = new CopyOnWriteArrayList<GameObject>();
         shieldObjects = new CopyOnWriteArrayList<GameObject>();
         coinObjects = new CopyOnWriteArrayList<GameObject>();
+        bullets = new CopyOnWriteArrayList<GameObject>();
 
         random = new Random();
 
@@ -105,11 +113,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         switch (e) {
             case MotionEvent.ACTION_DOWN:
-
                 return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
-                playerXPosition = event.getX();
-                playerYPosition = event.getY();
+                if (event.getX() - player.getBitmap().getWidth()/2 > 0 && event.getX() + player.getBitmap().getWidth()/2 < GameActivity.SCREEN_WIDTH) {
+                    playerXPosition = event.getX();
+                }
+                if (event.getY() - player.getBitmap().getWidth()/2 > 0 && event.getY() +player.getBitmap().getWidth()/2 < GameActivity.SCREEN_HEIGHT) {
+                    playerYPosition = event.getY();
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -123,8 +134,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             if (!isPauseButtonPressed) {
                 player.move(playerXPosition, playerYPosition);
+                for (GameObject bullet : bullets) {
+                    bullet.move();
+                    if (bullet.getYPosition() + bullet.getSpriteHeight() < 0) {
+                        bullets.remove(bullet);
+                    }
+                }
                 for (GameObject ho : heartObjects) {
                     ho.move();
+                    if (ho.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                        heartObjects.remove(ho);
+                    }
                     if (player.isCollision(ho)) {
                         addHeart(canvas);
                         heartObjects.remove(ho);
@@ -133,6 +153,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 for (GameObject co : coinObjects) {
                     co.move();
+                    if (co.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                        coinObjects.remove(co);
+                    }
                     if (player.isCollision(co)) {
                         coinObjects.remove(co);
                     }
@@ -140,23 +163,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                 for (GameObject so : shieldObjects) {
                     so.move();
+                    if (so.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                        shieldObjects.remove(so);
+                    }
                     if (player.isCollision(so)) {
+                        player.setHasShield(true);
                         shieldObjects.remove(so);
                     }
                 }
 
                 for (GameObject eo : enemyObjects) {
                     eo.move();
-                    if (player.isCollision(eo)) {
-                        removeHeart(canvas);
+                    if (eo.getYPosition() > GameActivity.SCREEN_HEIGHT) {
                         enemyObjects.remove(eo);
+                    }
+                    if (player.isCollision(eo)) {
+                        if (player.hasShield()) {
+                            player.setHasShield(false);
+                        } else {
+                            removeHeart(canvas);
+                        }
+                        enemyObjects.remove(eo);
+                    }
+
+                    for (GameObject bullet : bullets) {
+                        if (bullet.isCollision(eo)) {
+                            bullets.remove(bullet);
+                            enemyObjects.remove(eo);
+                        }
                     }
                 }
             }
 
             if (canvas != null) {
-                canvas.drawColor(Color.YELLOW);
+
+                drawBackground(canvas);
+                //drawBullets(canvas);
                 drawHeart(canvas);
+
                 for (GameObject ho : heartObjects) {
                     ho.draw(canvas);
                 }
@@ -169,36 +213,59 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 for (GameObject eo : enemyObjects) {
                     eo.draw(canvas);
                 }
+                for (GameObject bullet : bullets) {
+                    bullet.draw(canvas);
+                }
                 player.draw(canvas);
             }
         }
     }
 
+    private void drawBackground(Canvas canvas) {
+
+        canvas.drawBitmap(Bitmaps.galaxyBackgroundImg, 0, 0, null);
+        canvas.drawBitmap(Bitmaps.starsImg, 0, yTransition, alphaPaint);
+        canvas.drawBitmap(Bitmaps.starsImg, 0, yTransition - GameActivity.SCREEN_HEIGHT, alphaPaint);
+        yTransition += BACKGROUND_SPEED;
+        if (yTransition > GameActivity.SCREEN_HEIGHT) {
+            yTransition = 0;
+        }
+    }
+
+//    private void drawBullets(Canvas canvas) {
+//        canvas.drawBitmap(bullet.getBitmap(), bullet.getxPosition() - Bitmaps.bulletsImg.getWidth() / 2, bullet.getyPosition(), null);
+//
+//        if (bullet.getyPosition() <= 0) {
+//            bullet.setyPosition(playerYPosition);
+//            bullet.setxPosition(playerXPosition);
+//        }
+//    }
+
     private void removeHeart(Canvas canvas) {
-        if(heartIndex == 1){
+        if (heartIndex == 1) {
             this.heartIndex--;
             gameOver();
-        }else{
+        } else {
             this.heartIndex--;
         }
     }
 
     private void drawHeart(Canvas canvas) {
-        if(this.heartIndex == 3){
-            canvas.drawBitmap(Bitmaps.heartImg,10,10,null);
-            canvas.drawBitmap(Bitmaps.heartImg,10+(Bitmaps.heartImg.getWidth()),10,null);
-            canvas.drawBitmap(Bitmaps.heartImg,10+(Bitmaps.heartImg.getWidth()*2),10,null);
-        }else if(this.heartIndex == 2){
-            canvas.drawBitmap(Bitmaps.heartImg,10,10,null);
-            canvas.drawBitmap(Bitmaps.heartImg,10+(Bitmaps.heartImg.getWidth()),10,null);
-        }else if(this.heartIndex == 1){
-            canvas.drawBitmap(Bitmaps.heartImg,10,10,null);
+        if (this.heartIndex == 3) {
+            canvas.drawBitmap(Bitmaps.heartImg, 10, 10, null);
+            canvas.drawBitmap(Bitmaps.heartImg, 10 + (Bitmaps.heartImg.getWidth()) + 5, 10, null);
+            canvas.drawBitmap(Bitmaps.heartImg, 10 + (Bitmaps.heartImg.getWidth() * 2) + 10, 10, null);
+        } else if (this.heartIndex == 2) {
+            canvas.drawBitmap(Bitmaps.heartImg, 10, 10, null);
+            canvas.drawBitmap(Bitmaps.heartImg, 10 + (Bitmaps.heartImg.getWidth()) + 5, 10, null);
+        } else if (this.heartIndex == 1) {
+            canvas.drawBitmap(Bitmaps.heartImg, 10, 10, null);
         }
 
     }
 
     private void addHeart(Canvas canvas) {
-        if(heartIndex != 3){
+        if (heartIndex != 3) {
             heartIndex++;
         }
     }
@@ -207,13 +274,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d("GAMEOVER", "gameOver ");
     }
 
-
     public void addGameObjects() {
         if (!isPauseButtonPressed) {
             addEnemyObject();
             addHeartObject();
             addShieldObject();
             addCoinObject();
+            checkShieldTimeOnPlayer();
+            addBullet();
+        }
+    }
+
+    private void addBullet() {
+        long currentHeartTimer = System.currentTimeMillis();
+        if (currentHeartTimer - bulletTimer > 1000) {
+            bullets.add(new Bullet(playerXPosition - Bitmaps.bulletsImg.getWidth() / 2, playerYPosition));
+            bulletTimer = System.currentTimeMillis();
         }
     }
 
@@ -221,7 +297,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentHeartTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentHeartTimer - heartTimer > 1200) {
+        if (currentHeartTimer - heartTimer > 30200) {
             heartObjects.add(new Heart(xPosition, yPosition, (xPosition % 10) + 5));
             heartTimer = System.currentTimeMillis();
         }
@@ -231,7 +307,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentShieldTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentShieldTimer - shieldTimer > 60700) {
+        if (currentShieldTimer - shieldTimer > 3700) {
             shieldObjects.add(new Shield(xPosition, yPosition, (xPosition % 10) + 5));
             shieldTimer = System.currentTimeMillis();
         }
@@ -252,6 +328,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (currentEnemyTimer - enemyTimer > 1500) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this));
             enemyTimer = System.currentTimeMillis();
+        }
+    }
+
+    private void checkShieldTimeOnPlayer() {
+        long currentShieldTimer = System.currentTimeMillis();
+        if (currentShieldTimer - player.getPlayShieldTimer() > 5000) {
+            player.setHasShield(false);
+            player.setPlayShieldTimer(System.currentTimeMillis());
         }
     }
 

@@ -1,6 +1,8 @@
 package com.alex_nechaev.androidonefinalproject;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +32,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         SCREEN_HEIGHT = displayMetrics.heightPixels;
@@ -42,6 +48,8 @@ public class GameActivity extends AppCompatActivity {
         pauseDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         pauseDialog.setCancelable(false);
         pauseDialog.setContentView(R.layout.pause_menu);
+        pauseDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+
 
         pauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +91,10 @@ public class GameActivity extends AppCompatActivity {
             }
         });
         setContentView(gameLayout);
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     private void startNewGame() {
