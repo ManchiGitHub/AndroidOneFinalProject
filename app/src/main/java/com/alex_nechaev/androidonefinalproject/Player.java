@@ -2,35 +2,24 @@ package com.alex_nechaev.androidonefinalproject;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.util.Log;
 
 public class Player extends GameObject {
 
-    private boolean isPlayerHasShield;
+    private boolean hasShield;
+    private boolean hasExploded;
     private Bitmap shield;
-    long playShieldTimer;
+    private Bitmap explosion;
 
     public Player(float xPosition, float yPosition, int speed) {
         super(Bitmaps.playerImg, xPosition, yPosition, speed);
         this.shield = Bitmaps.playerShieldImg;
-        this.isPlayerHasShield = false;
-    }
-
-    public long getPlayShieldTimer() {
-        return playShieldTimer;
-    }
-
-    public void setPlayShieldTimer(long playShieldTimer) {
-        this.playShieldTimer = playShieldTimer;
+        this.explosion = Bitmaps.explosionImg;
+        this.hasShield = false;
+        this.hasExploded = false;
     }
 
     public Bitmap getBitmap() {
         return characterBitmap;
-    }
-
-    public void setPlayerBitmap(Bitmap playerBitmap) {
-        this.characterBitmap = playerBitmap;
     }
 
     public float getXPosition() {
@@ -57,32 +46,35 @@ public class Player extends GameObject {
         return characterBitmap.getWidth();
     }
 
+    public boolean hasExploded() {
+        return hasExploded;
+    }
+
+    public void setHasExploded(boolean hasExploded) {
+        this.hasExploded = hasExploded;
+    }
+
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(characterBitmap, getXPosition() - getSpriteWidth() / 2, getYPosition() - getSpriteHeight() / 2, null);
-        if(isPlayerHasShield) {
-            canvas.drawBitmap(this.shield,getXPosition() - this.shield.getWidth() / 2, getYPosition() - this.shield.getHeight() / 2, null);
+        if(hasShield) {
+            canvas.drawBitmap(shield,getXPosition() - this.shield.getWidth() / 2, getYPosition() - this.shield.getHeight() / 2, null);
         }
-    }
-
-    private void startShieldTimer() {
-        this.playShieldTimer = System.currentTimeMillis();
+        if(hasExploded){
+            canvas.drawBitmap(explosion,getXPosition() - this.explosion.getWidth() / 2, getYPosition() - this.shield.getHeight() / 2, null);
+        }
     }
 
     @Override
     public void move() {
-
     }
 
     public boolean hasShield() {
-        return isPlayerHasShield;
+        return hasShield;
     }
 
     public void setHasShield(boolean playerHasShield) {
-        isPlayerHasShield = playerHasShield;
-        if(isPlayerHasShield){
-            startShieldTimer();
-        }
+        hasShield = playerHasShield;
     }
 
     public void move(float x, float y) {

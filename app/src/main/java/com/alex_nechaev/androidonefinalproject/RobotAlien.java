@@ -1,15 +1,13 @@
 package com.alex_nechaev.androidonefinalproject;
 
 
-import android.util.Log;
-
-public class DuckAlien extends GameObject {
+public class RobotAlien extends GameObject {
 
     int moves = 0;
     boolean speedUp = false;
 
-    public DuckAlien(float xPosition, float yPosition, int speed) {
-        super(Bitmaps.duckAlienImg, xPosition, yPosition, speed);
+    public RobotAlien(float xPosition, float yPosition, int speed) {
+        super(Bitmaps.robotAlienImg, xPosition, yPosition, speed);
     }
 
     @Override

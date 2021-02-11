@@ -24,10 +24,6 @@ public class GameObject {
         return characterBitmap;
     }
 
-    public void setPlayerBitmap(Bitmap playerBitmap) {
-        this.characterBitmap = playerBitmap;
-    }
-
     public float getXPosition() {
         return xPosition;
     }
@@ -76,41 +72,10 @@ public class GameObject {
         rect.set((int) xPosition, (int) yPosition, (int) xPosition + characterBitmap.getWidth(), (int) yPosition + characterBitmap.getHeight());
     }
 
-
     public boolean isCollision(GameObject gameObject) {
-
-//        if (gameObject != null) {
-//            float leftBorder = gameObject.getLeftBorder();
-//            float rightBorder = gameObject.getRightBorder();
-//            float topBorder = gameObject.getTopBorder();
-//            float bottomBorder = gameObject.getBottomBorder();
-//
-//            //Collision test in the Y axis:
-//            boolean collisionFromTop = bottomBorder >= getTopBorder() && bottomBorder <= getBottomBorder();
-//            boolean collisionFromBottom = topBorder >= getTopBorder() && topBorder <= getBottomBorder();
-//            //Collision test in the X axis:
-//            boolean collisionFromRight = getRightBorder() >= leftBorder && getRightBorder() <= rightBorder;
-//            boolean collisionFromLeft = getLeftBorder() >= leftBorder && getLeftBorder() <= rightBorder;
-//
-//            if ((collisionFromTop || collisionFromBottom) && (collisionFromRight || collisionFromLeft)) {
-//                //Collision is Happened
-//                Log.d("Collision", "Collision with" + gameObject.toString());
-//                Log.d("Collision", "player:" + getLeftBorder() + ", " + getTopBorder() + ", " + getRightBorder() + ", " + getBottomBorder());
-//                Log.d("Collision", "Object:" + leftBorder + ", " + topBorder + ", " + rightBorder + ", " + bottomBorder);
-//                return true;
-//            }
-//        }
-//        return false;
-
         if(gameObject!=null){
-            if (this.rect.intersect(gameObject.rect)) {
-                Log.d("Collision", "Collision with: "+gameObject.toString());
-                Log.d("Collision", "left:"+rect.left+", top:"+rect.top+", right:"+rect.right+", bottom:"+rect.bottom);
-                Log.d("Collision", "left:"+gameObject.rect.left+", top:"+gameObject.rect.top+", right:"+gameObject.rect.right+", bottom:"+gameObject.rect.bottom);
-                return true;
-            }
+            return this.rect.intersect(gameObject.rect);
         }
-
         return false;
     }
 

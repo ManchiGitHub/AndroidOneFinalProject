@@ -9,7 +9,8 @@ import android.os.Build;
 
 public class Bitmaps {
 
-    static Bitmap playerImg, blueAlienImg, greenAlienImg, duckAlienImg, mathafixAlienImg, UFOImg, coinImg, shieldImg, heartImg, galaxyBackgroundImg, starsImg, bulletsImg, playerShieldImg;
+    static Bitmap playerImg, blueAlienImg, greenAlienImg, robotAlienImg, orangeAlienImg, UFOImg, coinImg, shieldImg, heartImg,
+            galaxyBackgroundImg, starsImg, bulletsImg, playerShieldImg, explosionImg;
     private Bitmap unscaledGalaxyBackground, unscaledStars;
 
     public Bitmaps(Resources resources) {
@@ -21,9 +22,9 @@ public class Bitmaps {
         playerShieldImg = getBitmap(resources, R.drawable.player_shield);
         blueAlienImg = getBitmap(resources, R.drawable.blue_alien);
         greenAlienImg = getBitmap(resources, R.drawable.green_alien);
-        duckAlienImg = getBitmap(resources, R.drawable.duck_alien);
-        mathafixAlienImg = getBitmap(resources, R.drawable.mathafix_alien);
-        UFOImg = getBitmap(resources, R.drawable.ufo);
+        robotAlienImg = getBitmap(resources, R.drawable.robot_alien);
+        orangeAlienImg = getBitmap(resources, R.drawable.orange_alien);
+        UFOImg = getBitmap(resources, R.drawable.ufo_alien);
         coinImg = getBitmap(resources, R.drawable.coin_supply);
         shieldImg = getBitmap(resources, R.drawable.shield_supply);
         heartImg = getBitmap(resources, R.drawable.heart_supply);
@@ -32,6 +33,7 @@ public class Bitmaps {
         starsImg = Bitmap.createScaledBitmap(unscaledStars, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         galaxyBackgroundImg = Bitmap.createScaledBitmap(unscaledGalaxyBackground, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         bulletsImg = getBitmap(resources, R.drawable.bullet);
+        explosionImg = getBitmap(resources, R.drawable.explosion);
     }
 
 

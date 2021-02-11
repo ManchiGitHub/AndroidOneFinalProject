@@ -9,8 +9,8 @@ public enum eEnemyType {
 
     BlueAlien,
     GreenAlien,
-    DuckAlien,
-    MathafixAlien,
+    RobotAlien,
+    OrangeAlien,
     UFO;
 
     private static final List<eEnemyType> ENEMIES = Collections.unmodifiableList(Arrays.asList(values()));
