@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private final int MAX_HEARTS = 3;
-    private final int BACKGROUND_SPEED = 80;
+    private final int BACKGROUND_SPEED = 40;
 
     Paint alphaPaint;
     Paint scorePaint;
@@ -34,6 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     private boolean isPauseButtonPressed;
+    private boolean isGameOver;
 
     private float playerYPosition;
     private float playerXPosition;
@@ -52,6 +52,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         enemyTimer = heartTimer = shieldTimer = coinTimer = System.currentTimeMillis();
         isPauseButtonPressed = false;
+        isGameOver = false;
 
         //Player values initiation
         playerYPosition = GameActivity.SCREEN_HEIGHT - (GameActivity.SCREEN_HEIGHT / 4);
@@ -123,7 +124,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_DOWN:
                 return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
-                if (event.getX() - (player.getBitmap().getWidth() / 2) + 25 > 0 && event.getX() + (player.getBitmap().getWidth() / 2) - 25 < GameActivity.SCREEN_WIDTH) {
+                if (event.getX() - (player.getBitmap().getWidth() / 2) + 50 > 0 && event.getX() + (player.getBitmap().getWidth() / 2) - 50 < GameActivity.SCREEN_WIDTH) {
                     playerXPosition = event.getX();
                 }
                 if (event.getY() - (player.getBitmap().getWidth() / 2) > 0 && event.getY() + player.getBitmap().getWidth() / 2 < GameActivity.SCREEN_HEIGHT) {
@@ -225,7 +226,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 for (GameObject bullet : bullets) {
                     bullet.draw(canvas);
                 }
-                player.draw(canvas);
+                if(!isGameOver){
+                    player.draw(canvas);
+                }
                 drawHeart(canvas);
                 drawScore(canvas);
             }
@@ -250,7 +253,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void removeHeart() {
         if (heartIndex == 1) {
             this.heartIndex--;
-            gameOver();
+            isGameOver = true;
         } else {
             if (heartIndex != 0)
                 this.heartIndex--;
@@ -281,7 +284,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void gameOver() {
-        Log.d("GAMEOVER", "gameOver ");
+        enemyObjects.clear();
+        heartObjects.clear();
+        shieldObjects.clear();
+        coinObjects.clear();
+        bullets.clear();
+
     }
 
     public void addGameObjects() {
@@ -294,6 +302,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             checkExplosionTimeOnPlayer();
             addBullet();
             addScore();
+        }
+        if(isGameOver){
+            gameOver();
         }
     }
 
@@ -310,15 +321,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void addScore() {
-        score++;
+        if(!isGameOver)
+            score++;
     }
 
     private void addBullet() {
         long currentHeartTimer = System.currentTimeMillis();
         if (score < 120000) {
-            this.deltaScore = score / 200;
+            this.deltaScore = score / 300;
         }
-        if (currentHeartTimer - bulletTimer > 900 - deltaScore) {
+        if (currentHeartTimer - bulletTimer > 900 - deltaScore && !isPauseButtonPressed) {
             bullets.add(new Bullet(playerXPosition - Bitmaps.bulletsImg.getWidth() / 2, playerYPosition));
             bulletTimer = System.currentTimeMillis();
         }
@@ -328,7 +340,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentHeartTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentHeartTimer - heartTimer > 32200) {
+        if (currentHeartTimer - heartTimer > 32200 && !isPauseButtonPressed) {
             heartObjects.add(new Heart(xPosition, yPosition, (xPosition % 10) + 5));
             heartTimer = System.currentTimeMillis();
         }
@@ -338,7 +350,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentShieldTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentShieldTimer - shieldTimer > 47700) {
+        if (currentShieldTimer - shieldTimer > 47700 && !isPauseButtonPressed) {
             shieldObjects.add(new Shield(xPosition, yPosition, (xPosition % 10) + 5));
             shieldTimer = System.currentTimeMillis();
         }
@@ -348,7 +360,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentCoinTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentCoinTimer - coinTimer > 13100) {
+        if (currentCoinTimer - coinTimer > 13100 && !isPauseButtonPressed) {
             coinObjects.add(new Coin(xPosition, yPosition, (xPosition % 10) + 5));
             coinTimer = System.currentTimeMillis();
         }
@@ -356,7 +368,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if (currentEnemyTimer - enemyTimer > 1700 - this.deltaScore) {
+        if (currentEnemyTimer - enemyTimer > 1700 - this.deltaScore && !isPauseButtonPressed) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
             enemyTimer = System.currentTimeMillis();
         }

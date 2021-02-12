@@ -1,8 +1,7 @@
 package com.alex_nechaev.androidonefinalproject;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,6 +26,7 @@ public class GameActivity extends AppCompatActivity {
     FrameLayout gameLayout;
     ImageButton pauseBtn;
     Dialog pauseDialog;
+    Dialog gameOverDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,79 +50,88 @@ public class GameActivity extends AppCompatActivity {
         pauseDialog.setContentView(R.layout.pause_menu);
         pauseDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
+        gameOverDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        gameOverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        gameOverDialog.setCancelable(false);
+        gameOverDialog.setContentView(R.layout.pause_menu);
+        gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
         pauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameView.setPauseButtonPressed(true);
-
-                ImageButton resumeBtn = pauseDialog.findViewById(R.id.resume_btn);
-                ImageButton replayBtn = pauseDialog.findViewById(R.id.replay_btn);
-                ImageButton exitBtn = pauseDialog.findViewById(R.id.exit_btn);
                 pauseDialog.show();
-
-                resumeBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(GameActivity.this, "Resume", Toast.LENGTH_SHORT).show();
-                        gameView.setPauseButtonPressed(false);
-                        pauseDialog.dismiss();
-                    }
-                });
-
-                replayBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(GameActivity.this, "Replay", Toast.LENGTH_SHORT).show();
-                        gameView.setPauseButtonPressed(false);
-                        pauseDialog.dismiss();
-                    }
-                });
-
-                exitBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Back to Main Menu
-                        Dialog exitDialog;
-                        exitDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
-                        exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        exitDialog.setCancelable(false);
-                        exitDialog.setContentView(R.layout.exit_menu);
-                        //exitDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
-
-                        exitDialog.show();
-                        pauseDialog.dismiss();
-
-                        ImageButton applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
-                        applyBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(GameActivity.this, "Exit", Toast.LENGTH_SHORT).show();
-                                gameView.setPauseButtonPressed(true);
-                            }
-                        });
-
-                        ImageButton cancelBtn = exitDialog.findViewById(R.id.exit_no_btn);
-                        cancelBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                gameView.setPauseButtonPressed(false);
-                                exitDialog.dismiss();
-
-                            }
-                        });
-
-
-                    }
-                });
             }
         });
+
+        ImageButton resumeBtn = pauseDialog.findViewById(R.id.resume_btn);
+        resumeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(GameActivity.this, "Resume", Toast.LENGTH_SHORT).show();
+                gameView.setPauseButtonPressed(false);
+                pauseDialog.dismiss();
+            }
+        });
+
+        ImageButton replayBtn = pauseDialog.findViewById(R.id.replay_btn);
+        replayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(GameActivity.this, "Replay", Toast.LENGTH_SHORT).show();
+                gameView.setPauseButtonPressed(false);
+                pauseDialog.dismiss();
+            }
+        });
+
+        ImageButton exitBtn = pauseDialog.findViewById(R.id.exit_btn);
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Back to Main Menu
+                Dialog exitDialog;
+                exitDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+                exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                exitDialog.setCancelable(false);
+                exitDialog.setContentView(R.layout.exit_menu);
+                //exitDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+
+                exitDialog.show();
+                pauseDialog.dismiss();
+
+                ImageButton applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
+                applyBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(GameActivity.this, "Exit", Toast.LENGTH_SHORT).show();
+                        gameView.setPauseButtonPressed(true);
+                        Intent intent = new Intent(GameActivity.this,MainActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
+                ImageButton cancelBtn = exitDialog.findViewById(R.id.exit_no_btn);
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gameView.setPauseButtonPressed(false);
+                        exitDialog.dismiss();
+                    }
+                });
+
+
+            }
+        });
+
         setContentView(gameLayout);
     }
 
     @Override
     public void onBackPressed() {
+
     }
+
 
     private void startNewGame() {
         gameLayout = new FrameLayout(this);
