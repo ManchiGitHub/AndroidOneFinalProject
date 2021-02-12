@@ -24,8 +24,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Paint scorePaint;
     private int yTransition;
 
-    long enemyTimer, heartTimer, shieldTimer, onShieldTimer, explosionTimer,coinTimer, bulletTimer;
+    private int score = 0;
     double deltaScore;
+
+    long enemyTimer, heartTimer, shieldTimer, onShieldTimer, explosionTimer, coinTimer, bulletTimer;
     private Random random;
 
     private SurfaceHolder holder;
@@ -42,8 +44,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> shieldObjects;
     private List<GameObject> coinObjects;
     private List<GameObject> bullets;
-
-    private int score = 0;
 
     private int heartIndex = MAX_HEARTS;
 
@@ -123,17 +123,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_DOWN:
                 return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
-                if (event.getX() - (player.getBitmap().getWidth()/2) + 25 > 0 && event.getX() + (player.getBitmap().getWidth()/2) -25 < GameActivity.SCREEN_WIDTH) {
+                if (event.getX() - (player.getBitmap().getWidth() / 2) + 25 > 0 && event.getX() + (player.getBitmap().getWidth() / 2) - 25 < GameActivity.SCREEN_WIDTH) {
                     playerXPosition = event.getX();
                 }
-                if (event.getY() - (player.getBitmap().getWidth()/2) > 0 && event.getY() +player.getBitmap().getWidth()/2 < GameActivity.SCREEN_HEIGHT) {
+                if (event.getY() - (player.getBitmap().getWidth() / 2) > 0 && event.getY() + player.getBitmap().getWidth() / 2 < GameActivity.SCREEN_HEIGHT) {
                     playerYPosition = event.getY();
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + e);
         }
         return super.onTouchEvent(event);
     }
@@ -168,7 +166,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     if (player.isCollision(co)) {
                         coinObjects.remove(co);
-                        score+=1000;
+                        score += 1000;
                     }
                 }
 
@@ -202,7 +200,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (bullet.isCollision(eo)) {
                             bullets.remove(bullet);
                             enemyObjects.remove(eo);
-                            score+=300;
+                            score += 300;
                         }
                     }
                 }
@@ -235,7 +233,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawScore(Canvas canvas) {
-        canvas.drawText("SCORE: "+score,Bitmaps.heartImg.getWidth()*5,100,scorePaint);
+        canvas.drawText("SCORE: " + score, Bitmaps.heartImg.getWidth() * 5, 100, scorePaint);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -254,7 +252,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.heartIndex--;
             gameOver();
         } else {
-            this.heartIndex--;
+            if (heartIndex != 0)
+                this.heartIndex--;
         }
     }
 
@@ -274,7 +273,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void addHeart() {
-        if (heartIndex != 3) {
+        if (heartIndex == 3) {
+            score += 2000;
+        } else if (heartIndex != 3) {
             heartIndex++;
         }
     }
@@ -297,12 +298,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void checkExplosionTimeOnPlayer() {
-        if(player.hasExploded()){
+        if (player.hasExploded()) {
             explosionTimer++;
-        }else{
-            explosionTimer=0;
+        } else {
+            explosionTimer = 0;
         }
-        if(explosionTimer % 20 == 0){
+        if (explosionTimer % 20 == 0) {
             explosionTimer = 0;
             player.setHasExploded(false);
         }
@@ -314,10 +315,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addBullet() {
         long currentHeartTimer = System.currentTimeMillis();
-        if(score < 120000) {
+        if (score < 120000) {
             this.deltaScore = score / 200;
         }
-        if (currentHeartTimer - bulletTimer > 900-deltaScore) {
+        if (currentHeartTimer - bulletTimer > 900 - deltaScore) {
             bullets.add(new Bullet(playerXPosition - Bitmaps.bulletsImg.getWidth() / 2, playerYPosition));
             bulletTimer = System.currentTimeMillis();
         }
@@ -355,19 +356,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if (currentEnemyTimer - enemyTimer > 1700) {
-            enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this,score));
+        if (currentEnemyTimer - enemyTimer > 1700 - this.deltaScore) {
+            enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
             enemyTimer = System.currentTimeMillis();
         }
     }
 
     private void checkShieldTimeOnPlayer() {
-        if(player.hasShield()){
+        if (player.hasShield()) {
             onShieldTimer++;
-        }else{
-            onShieldTimer=0;
+        } else {
+            onShieldTimer = 0;
         }
-        if(onShieldTimer % 500 == 0){
+        if (onShieldTimer % 500 == 0) {
             onShieldTimer = 0;
             player.setHasShield(false);
         }

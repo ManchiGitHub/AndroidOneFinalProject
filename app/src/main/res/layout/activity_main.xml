@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/space_galaxy">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_foreground"/>
+        android:layout_marginTop="80dp"
+        android:layout_marginHorizontal="25dp"
+        android:src="@drawable/game_title"/>
 
    <LinearLayout
        android:layout_width="match_parent"
@@ -19,13 +22,12 @@
        <Space
            android:layout_width="match_parent"
            android:layout_height="0dp"
-           android:layout_weight="1"/>
+           android:layout_weight="2"/>
        <ImageButton
            android:id="@+id/play_img_btn"
            android:layout_width="200dp"
            android:layout_height="0dp"
            android:layout_weight="1"
-           android:src="@drawable/play_drawable"
            app:backgroundTint="@null"
            android:background="@drawable/play_btn"
            android:layout_gravity="center"/>
@@ -34,29 +36,18 @@
            android:layout_height="0dp"
            android:layout_weight="0.5"/>
        <ImageButton
-           android:layout_width="200dp"
+           android:layout_width="wrap_content"
            android:layout_height="0dp"
            android:layout_weight="1"
-           android:src="@drawable/play_drawable"
+           android:layout_marginHorizontal="60dp"
            app:backgroundTint="@null"
-           android:background="@drawable/play_btn"
+           android:background="@drawable/table_score_btn"
            android:layout_gravity="center"/>
        <Space
            android:layout_width="match_parent"
            android:layout_height="0dp"
-           android:layout_weight="0.5"/>
-       <ImageButton
-           android:layout_width="200dp"
-           android:layout_height="0dp"
-           android:layout_weight="1"
-           android:src="@drawable/play_drawable"
-           app:backgroundTint="@null"
-           android:background="@drawable/play_btn"
-           android:layout_gravity="center"/>
-       <Space
-           android:layout_width="match_parent"
-           android:layout_height="0dp"
-           android:layout_weight="1"/>
+           android:layout_weight="2"/>
+
    </LinearLayout>
 
 </LinearLayout>

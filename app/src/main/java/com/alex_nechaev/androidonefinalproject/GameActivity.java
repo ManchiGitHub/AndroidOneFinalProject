@@ -44,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
         gameView = new GameView(GameActivity.this);
         startNewGame();
 
-        pauseDialog = new Dialog(GameActivity.this,R.style.Theme_AppCompat_Light_Dialog_Alert);
+        pauseDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
         pauseDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         pauseDialog.setCancelable(false);
         pauseDialog.setContentView(R.layout.pause_menu);
@@ -82,10 +82,37 @@ public class GameActivity extends AppCompatActivity {
                 exitBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(GameActivity.this, "Exit", Toast.LENGTH_SHORT).show();
                         //Back to Main Menu
-                        gameView.setPauseButtonPressed(false);
+                        Dialog exitDialog;
+                        exitDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+                        exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        exitDialog.setCancelable(false);
+                        exitDialog.setContentView(R.layout.exit_menu);
+                        //exitDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+
+                        exitDialog.show();
                         pauseDialog.dismiss();
+
+                        ImageButton applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
+                        applyBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(GameActivity.this, "Exit", Toast.LENGTH_SHORT).show();
+                                gameView.setPauseButtonPressed(true);
+                            }
+                        });
+
+                        ImageButton cancelBtn = exitDialog.findViewById(R.id.exit_no_btn);
+                        cancelBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                gameView.setPauseButtonPressed(false);
+                                exitDialog.dismiss();
+
+                            }
+                        });
+
+
                     }
                 });
             }
@@ -120,9 +147,9 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("STATE", "onPause: ");
         gameView.pause();
         pauseDialog.show();
-        Log.d("STATE", "onPause: ");
     }
 
     @Override
