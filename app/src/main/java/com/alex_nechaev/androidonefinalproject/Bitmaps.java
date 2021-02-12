@@ -10,7 +10,7 @@ import android.os.Build;
 public class Bitmaps {
 
     static Bitmap playerImg, blueAlienImg, greenAlienImg, robotAlienImg, orangeAlienImg, UFOImg, coinImg, shieldImg, heartImg,
-            galaxyBackgroundImg, starsImg, bulletsImg, playerShieldImg, explosionImg;
+            galaxyBackgroundImg, starsImg, bulletsImg, playerShieldImg, explosionImg, enemyExplosionImg;
     private Bitmap unscaledGalaxyBackground, unscaledStars;
 
     public Bitmaps(Resources resources) {
@@ -33,20 +33,9 @@ public class Bitmaps {
         starsImg = Bitmap.createScaledBitmap(unscaledStars, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         galaxyBackgroundImg = Bitmap.createScaledBitmap(unscaledGalaxyBackground, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         bulletsImg = getBitmap(resources, R.drawable.bullet);
-        explosionImg = getBitmap(resources, R.drawable.explosion);
+        explosionImg = getBitmap(resources, R.drawable.player_explosion);
+        enemyExplosionImg = getBitmap(resources, R.drawable.explosions_rs);
     }
-
-
-//    private Bitmap getBitmap(Resources resources,int drawableRes) {
-//        Drawable drawable = resources.getDrawable(drawableRes);
-//        Canvas canvas = new Canvas();
-//        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-//        canvas.setBitmap(bitmap);
-//        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//        drawable.draw(canvas);
-//        return bitmap;
-//    }
-
 
     private Bitmap getBitmap(Resources resources, int drawableRes) {
         Bitmap bitmap = null;
@@ -62,6 +51,5 @@ public class Bitmaps {
             bitmap = BitmapFactory.decodeResource(resources, drawableRes);
         }
         return bitmap;
-
     }
 }

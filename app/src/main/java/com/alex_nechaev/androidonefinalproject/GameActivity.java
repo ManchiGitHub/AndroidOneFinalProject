@@ -10,23 +10,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 //This activity runs when the "PLAY GAME" button is pressed.
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements GameListener {
 
     static int SCREEN_WIDTH, SCREEN_HEIGHT;
     GameView gameView;
     FrameLayout gameLayout;
     ImageButton pauseBtn;
     Dialog pauseDialog;
-    Dialog gameOverDialog;
+    public static String PLAYER_DETAILS = "playerDetails";
+
+    ArrayList<PlayerDetails> playerDetails;
+
+    public static int score;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +49,10 @@ public class GameActivity extends AppCompatActivity {
         SCREEN_WIDTH = displayMetrics.widthPixels;
         Bitmaps bitmaps = new Bitmaps(getResources());
 
+        if (playerDetails == null) {
+            playerDetails = new ArrayList<PlayerDetails>();
+        }
+
         gameView = new GameView(GameActivity.this);
         startNewGame();
 
@@ -49,12 +61,6 @@ public class GameActivity extends AppCompatActivity {
         pauseDialog.setCancelable(false);
         pauseDialog.setContentView(R.layout.pause_menu);
         pauseDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
-
-        gameOverDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
-        gameOverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        gameOverDialog.setCancelable(false);
-        gameOverDialog.setContentView(R.layout.pause_menu);
-        gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
         pauseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +100,9 @@ public class GameActivity extends AppCompatActivity {
                 exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 exitDialog.setCancelable(false);
                 exitDialog.setContentView(R.layout.exit_menu);
-                //exitDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
-
-                exitDialog.show();
+                if(!gameView.isHasExited()){
+                    exitDialog.show();
+                }
                 pauseDialog.dismiss();
 
                 ImageButton applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
@@ -105,7 +111,9 @@ public class GameActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Toast.makeText(GameActivity.this, "Exit", Toast.LENGTH_SHORT).show();
                         gameView.setPauseButtonPressed(true);
-                        Intent intent = new Intent(GameActivity.this,MainActivity.class);
+                        gameView.setHasExited(true);
+                        gameView.setGameOver(true);
+                        Intent intent = new Intent(GameActivity.this, MainActivity.class);
                         finish();
                         startActivity(intent);
                     }
@@ -119,12 +127,63 @@ public class GameActivity extends AppCompatActivity {
                         exitDialog.dismiss();
                     }
                 });
-
-
             }
         });
 
         setContentView(gameLayout);
+    }
+
+    @Override
+    public void onGameOver() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                int score = gameView.getScore();
+
+                final Dialog gameOverDialog;
+                gameOverDialog = new Dialog(GameActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+                gameOverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                gameOverDialog.setCancelable(false);
+                gameOverDialog.setContentView(R.layout.gameover_menu);
+                gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+
+                TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score);
+                playerScoreTextView.setText("Your score is: " + score);
+                EditText playerNameEditText = gameOverDialog.findViewById(R.id.player_name_edit_text);
+
+                ImageButton submitBtn = gameOverDialog.findViewById(R.id.submit_btn);
+                submitBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String playerName;
+
+                        if (!playerNameEditText.getText().toString().equals(""))
+                            playerName = playerNameEditText.getText().toString();
+                        else
+                            playerName = "Player" + System.currentTimeMillis();
+
+                        playerDetails = (ArrayList<PlayerDetails>) FileManager.readFromFile(GameActivity.this, PLAYER_DETAILS);
+                        if (playerDetails == null) {
+                            playerDetails = new ArrayList<PlayerDetails>();
+                        }
+                        playerDetails.add(new PlayerDetails(score, playerName));
+                        FileManager.writeToFile(GameActivity.this, playerDetails, PLAYER_DETAILS);
+                        playerNameEditText.setText("");
+
+                        Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                        gameOverDialog.dismiss();
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+                gameView.pause();
+                if(!gameView.isHasExited()){
+                    gameOverDialog.show();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -158,7 +217,9 @@ public class GameActivity extends AppCompatActivity {
         super.onPause();
         Log.d("STATE", "onPause: ");
         gameView.pause();
-        pauseDialog.show();
+        if(!gameView.isHasExited()||!gameView.isGameOver()){
+            pauseDialog.show();
+        }
     }
 
     @Override

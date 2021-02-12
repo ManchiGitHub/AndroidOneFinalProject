@@ -1,12 +1,21 @@
 package com.alex_nechaev.androidonefinalproject;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,28 +32,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Paint scorePaint;
     private int yTransition;
 
-    private int score = 0;
+    private Dialog gameOverDialog;
+
+    private volatile int score ;
     double deltaScore;
 
     long enemyTimer, heartTimer, shieldTimer, onShieldTimer, explosionTimer, coinTimer, bulletTimer;
     private Random random;
 
     private SurfaceHolder holder;
+    private GameListener gameListenerDialogBox;
 
     private GameThread gameThread;
     private boolean isPauseButtonPressed;
     private boolean isGameOver;
+    private boolean hasExited;
 
+    private Explosions explosions;
     private float playerYPosition;
+
     private float playerXPosition;
     private Player player;
-
     private List<GameObject> enemyObjects;
+
     private List<GameObject> heartObjects;
     private List<GameObject> shieldObjects;
     private List<GameObject> coinObjects;
     private List<GameObject> bullets;
-
     private int heartIndex = MAX_HEARTS;
 
     public GameView(Context context) {
@@ -53,12 +67,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemyTimer = heartTimer = shieldTimer = coinTimer = System.currentTimeMillis();
         isPauseButtonPressed = false;
         isGameOver = false;
+        hasExited = false;
 
         //Player values initiation
         playerYPosition = GameActivity.SCREEN_HEIGHT - (GameActivity.SCREEN_HEIGHT / 4);
         playerXPosition = GameActivity.SCREEN_WIDTH / 2;
 
         player = new Player(playerXPosition, playerYPosition, 0);
+        explosions = new Explosions(context);
         alphaPaint = new Paint();
         alphaPaint.setAlpha(100);
 
@@ -72,7 +88,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         coinObjects = new CopyOnWriteArrayList<GameObject>();
         bullets = new CopyOnWriteArrayList<GameObject>();
 
+
+        gameOverDialog = new Dialog(context, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        gameOverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        gameOverDialog.setCancelable(false);
+        gameOverDialog.setContentView(R.layout.gameover_menu);
+        gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
+
+        TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score);
+        playerScoreTextView.setText("Your score is: "+score);
+        EditText playerNameEditText = gameOverDialog.findViewById(R.id.player_name_edit_text);
+        ImageButton submitBtn = gameOverDialog.findViewById(R.id.submit_btn);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "SUBMIT PRESSED", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         random = new Random();
+        gameListenerDialogBox=((GameListener)context);
 
         gameThread = new GameThread(this);
 
@@ -199,6 +235,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
                     for (GameObject bullet : bullets) {
                         if (bullet.isCollision(eo)) {
+                            explosions.setxPosition(eo.xPosition);
+                            explosions.setyPosition(eo.yPosition);
+                            explosions.setExplode(true);
                             bullets.remove(bullet);
                             enemyObjects.remove(eo);
                             score += 300;
@@ -225,6 +264,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 for (GameObject bullet : bullets) {
                     bullet.draw(canvas);
+                }
+                if (explosions.isExplode()) {
+                    explosions.draw(canvas);
                 }
                 if(!isGameOver){
                     player.draw(canvas);
@@ -283,13 +325,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public int getScore() {
+        return score;
+    }
+
     private void gameOver() {
         enemyObjects.clear();
         heartObjects.clear();
         shieldObjects.clear();
         coinObjects.clear();
         bullets.clear();
-
+        gameListenerDialogBox.onGameOver();
     }
 
     public void addGameObjects() {
@@ -314,7 +360,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         } else {
             explosionTimer = 0;
         }
-        if (explosionTimer % 20 == 0) {
+        if (explosionTimer % 5 == 0) {
             explosionTimer = 0;
             player.setHasExploded(false);
         }
@@ -409,5 +455,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         surfaceCreated(getHolder());
     }
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
 
+    public void setGameOver(boolean isGameOver) {
+        this.isGameOver = isGameOver;
+    }
+
+    public boolean isHasExited() {
+        return hasExited;
+    }
+
+    public void setHasExited(boolean hasExited) {
+        this.hasExited = hasExited;
+    }
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/Theme.Transparent"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="vertical"
+    android:background="@drawable/space_galaxy">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:gravity="center"
+        android:src="@drawable/game_over_img"/>
+    <TextView
+        android:id="@+id/player_score"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="Your score is: 12345"
+        android:textColor="@color/ship_sky_blue"
+        android:gravity="center"/>
+    <EditText
+        android:id="@+id/player_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:hint="@string/enter_name"
+        android:textColorHint="@color/ship_sky_blue"
+        android:gravity="center"
+        android:lines="1"
+        android:textColor="@color/ship_sky_blue"
+        android:background="@android:color/transparent"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <ImageButton
+        android:id="@+id/submit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/submit_btn"
+        android:background="@null"/>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>
