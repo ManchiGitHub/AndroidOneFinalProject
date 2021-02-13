@@ -27,11 +27,17 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
         android:hint="@string/enter_name"
-        android:textColorHint="@color/ship_sky_blue"
+        android:textColorHint="@android:color/holo_red_dark"
         android:gravity="center"
         android:lines="1"
         android:textColor="@color/ship_sky_blue"
         android:background="@android:color/transparent"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="70dp"
+        android:background="@color/ship_sky_blue"/>
+        />
 
     <Space
         android:layout_width="wrap_content"
