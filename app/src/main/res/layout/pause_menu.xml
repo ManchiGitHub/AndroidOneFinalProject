@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
-    android:background="@drawable/space_galaxy">
+    android:background="@drawable/game_background">
 
     <ImageView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/play_drawable"
+            android:src="@drawable/btn_play"
             android:background="@null"/>
         <Space
             android:layout_width="0dp"
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/replay_drawable"
+            android:src="@drawable/btn_replay"
             android:background="@null"/>
         <Space
             android:layout_width="0dp"
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/exit_drawable"
+            android:src="@drawable/btn_exit"
             android:background="@null"/>
         <Space
             android:layout_width="0dp"

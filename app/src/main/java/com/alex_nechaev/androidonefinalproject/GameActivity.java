@@ -82,8 +82,9 @@ public class GameActivity extends AppCompatActivity implements GameListener {
         replayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(GameActivity.this, "Replay", Toast.LENGTH_SHORT).show();
+
                 gameView.setPauseButtonPressed(false);
+                gameView.replayGame();
                 pauseDialog.dismiss();
             }
         });

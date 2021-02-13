@@ -275,12 +275,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    void replayGame(){
+        clearGameObjects();
+        this.score = 0;
+        player.setHasShield(false);
+        playerYPosition = GameActivity.SCREEN_HEIGHT - (GameActivity.SCREEN_HEIGHT / 4);
+        playerXPosition = GameActivity.SCREEN_WIDTH / 2;
+        heartIndex = MAX_HEARTS;
+        resume();
+    }
+
     private void drawScore(Canvas canvas) {
         canvas.drawText("SCORE: " + score, Bitmaps.heartImg.getWidth() * 5, 100, scorePaint);
     }
 
     private void drawBackground(Canvas canvas) {
-
         canvas.drawBitmap(Bitmaps.galaxyBackgroundImg, 0, 0, null);
         canvas.drawBitmap(Bitmaps.starsImg, 0, yTransition, alphaPaint);
         canvas.drawBitmap(Bitmaps.starsImg, 0, yTransition - GameActivity.SCREEN_HEIGHT, alphaPaint);
@@ -328,12 +337,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void gameOver() {
+        clearGameObjects();
+        gameListenerDialogBox.onGameOver();
+    }
+
+    private void clearGameObjects() {
         enemyObjects.clear();
         heartObjects.clear();
         shieldObjects.clear();
         coinObjects.clear();
         bullets.clear();
-        gameListenerDialogBox.onGameOver();
     }
 
     public void addGameObjects() {
@@ -375,9 +388,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.deltaScore = score / 300;
         }
         if (currentHeartTimer - bulletTimer > 900 - deltaScore && !isPauseButtonPressed) {
-            if(score <=10000) {
+            if(score <=30000) {
                 bullets.add(new Bullet(Bitmaps.bulletLv1Img, playerXPosition - Bitmaps.bulletLv1Img.getWidth() / 2, playerYPosition));
-            }else if(score <=20000){
+            }else if(score <=60000){
                 bullets.add(new Bullet(Bitmaps.bulletLv2Img, playerXPosition - Bitmaps.bulletLv2Img.getWidth() / 2, playerYPosition));
             }else{
                 bullets.add(new Bullet(Bitmaps.bulletLv3Img, playerXPosition - Bitmaps.bulletLv3Img.getWidth() / 2, playerYPosition));
@@ -418,7 +431,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if (currentEnemyTimer - enemyTimer > 1700 - this.deltaScore && !isPauseButtonPressed) {
+        if (currentEnemyTimer - enemyTimer > 1700 - (this.deltaScore*1.2) && !isPauseButtonPressed) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
             enemyTimer = System.currentTimeMillis();
         }
