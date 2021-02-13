@@ -375,9 +375,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.deltaScore = score / 300;
         }
         if (currentHeartTimer - bulletTimer > 900 - deltaScore && !isPauseButtonPressed) {
-            if(score <=100) {
+            if(score <=10000) {
                 bullets.add(new Bullet(Bitmaps.bulletLv1Img, playerXPosition - Bitmaps.bulletLv1Img.getWidth() / 2, playerYPosition));
-            }else if(score <=600){
+            }else if(score <=20000){
                 bullets.add(new Bullet(Bitmaps.bulletLv2Img, playerXPosition - Bitmaps.bulletLv2Img.getWidth() / 2, playerYPosition));
             }else{
                 bullets.add(new Bullet(Bitmaps.bulletLv3Img, playerXPosition - Bitmaps.bulletLv3Img.getWidth() / 2, playerYPosition));
