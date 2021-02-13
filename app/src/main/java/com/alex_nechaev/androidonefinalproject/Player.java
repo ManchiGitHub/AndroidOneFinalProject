@@ -18,7 +18,7 @@ public class Player extends GameObject {
         this.hasExploded = false;
     }
 
-    public Bitmap getBitmap() {
+    public Bitmap getBitmapLevel1() {
         return characterBitmap;
     }
 

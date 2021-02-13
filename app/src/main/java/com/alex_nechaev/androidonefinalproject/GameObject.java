@@ -20,7 +20,7 @@ public class GameObject {
         this.rect = new Rect();
     }
 
-    public Bitmap getBitmap() {
+    public Bitmap getBitmapLevel1() {
         return characterBitmap;
     }
 

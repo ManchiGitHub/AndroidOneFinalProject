@@ -158,10 +158,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_DOWN:
                 return (fixedEventX >= expendLeftBorder && fixedEventX <= expendRightBorder && fixedEventY >= expendTopBorder && fixedEventY <= expendBottomBorder);
             case MotionEvent.ACTION_MOVE:
-                if (event.getX() - (player.getBitmap().getWidth() / 2) + 50 > 0 && event.getX() + (player.getBitmap().getWidth() / 2) - 50 < GameActivity.SCREEN_WIDTH) {
+                if (event.getX() - (player.getBitmapLevel1().getWidth() / 2) + 50 > 0 && event.getX() + (player.getBitmapLevel1().getWidth() / 2) - 50 < GameActivity.SCREEN_WIDTH) {
                     playerXPosition = event.getX();
                 }
-                if (event.getY() - (player.getBitmap().getWidth() / 2) > 0 && event.getY() + player.getBitmap().getWidth() / 2 < GameActivity.SCREEN_HEIGHT) {
+                if (event.getY() - (player.getBitmapLevel1().getWidth() / 2) > 0 && event.getY() + player.getBitmapLevel1().getWidth() / 2 < GameActivity.SCREEN_HEIGHT) {
                     playerYPosition = event.getY();
                 }
                 break;
@@ -375,7 +375,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.deltaScore = score / 300;
         }
         if (currentHeartTimer - bulletTimer > 900 - deltaScore && !isPauseButtonPressed) {
-            bullets.add(new Bullet(playerXPosition - Bitmaps.bulletsImg.getWidth() / 2, playerYPosition));
+            if(score <=100) {
+                bullets.add(new Bullet(Bitmaps.bulletLv1Img, playerXPosition - Bitmaps.bulletLv1Img.getWidth() / 2, playerYPosition));
+            }else if(score <=600){
+                bullets.add(new Bullet(Bitmaps.bulletLv2Img, playerXPosition - Bitmaps.bulletLv2Img.getWidth() / 2, playerYPosition));
+            }else{
+                bullets.add(new Bullet(Bitmaps.bulletLv3Img, playerXPosition - Bitmaps.bulletLv3Img.getWidth() / 2, playerYPosition));
+            }
             bulletTimer = System.currentTimeMillis();
         }
     }

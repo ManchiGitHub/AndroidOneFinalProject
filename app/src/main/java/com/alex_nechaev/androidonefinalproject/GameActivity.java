@@ -34,8 +34,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
 
     ArrayList<PlayerDetails> playerDetails;
 
-    public static int score;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +112,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                         gameView.setHasExited(true);
                         gameView.setGameOver(true);
                         Intent intent = new Intent(GameActivity.this, MainActivity.class);
-                        finish();
                         startActivity(intent);
                     }
                 });
@@ -172,7 +169,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
 
                         Intent intent = new Intent(GameActivity.this, MainActivity.class);
                         gameOverDialog.dismiss();
-                        finish();
                         startActivity(intent);
                     }
                 });

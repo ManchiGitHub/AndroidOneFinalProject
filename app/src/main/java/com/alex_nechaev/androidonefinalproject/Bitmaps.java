@@ -10,7 +10,7 @@ import android.os.Build;
 public class Bitmaps {
 
     static Bitmap playerImg, blueAlienImg, greenAlienImg, robotAlienImg, orangeAlienImg, UFOImg, coinImg, shieldImg, heartImg,
-            galaxyBackgroundImg, starsImg, bulletsImg, playerShieldImg, explosionImg, enemyExplosionImg;
+            galaxyBackgroundImg, starsImg, bulletLv1Img,bulletLv2Img,bulletLv3Img, playerShieldImg, explosionImg, enemyExplosionImg;
     private Bitmap unscaledGalaxyBackground, unscaledStars;
 
     public Bitmaps(Resources resources) {
@@ -32,7 +32,9 @@ public class Bitmaps {
         unscaledGalaxyBackground = getBitmap(resources, R.drawable.space_galaxy);
         starsImg = Bitmap.createScaledBitmap(unscaledStars, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         galaxyBackgroundImg = Bitmap.createScaledBitmap(unscaledGalaxyBackground, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
-        bulletsImg = getBitmap(resources, R.drawable.bullet);
+        bulletLv1Img = getBitmap(resources, R.drawable.bullet_level_1);
+        bulletLv2Img = getBitmap(resources, R.drawable.bullet_level_2);
+        bulletLv3Img = getBitmap(resources, R.drawable.bullet_level_3);
         explosionImg = getBitmap(resources, R.drawable.player_explosion);
         enemyExplosionImg = getBitmap(resources, R.drawable.explosions_rs);
     }

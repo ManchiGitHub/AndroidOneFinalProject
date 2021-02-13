@@ -42,7 +42,7 @@
            android:layout_weight="1.7"
            android:layout_marginHorizontal="60dp"
            app:backgroundTint="@null"
-           android:background="@drawable/score_table_2_line_img"
+           android:background="@drawable/table_score_btn"
            android:layout_gravity="center"/>
        <Space
            android:layout_width="match_parent"

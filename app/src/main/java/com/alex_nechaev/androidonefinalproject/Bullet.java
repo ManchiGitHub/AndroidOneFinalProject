@@ -7,12 +7,9 @@ public class Bullet extends GameObject {
     private float yPosition;
     private float xPosition;
     private final static int BULLET_SPEED = 50;
-    private Bitmap bitmap;
 
-
-    public Bullet(float xPosition, float yPosition) {
-        super(Bitmaps.bulletsImg, xPosition, yPosition,BULLET_SPEED);
-        this.bitmap = characterBitmap;
+    public Bullet(Bitmap bitmap, float xPosition, float yPosition) {
+        super(bitmap, xPosition, yPosition,BULLET_SPEED);
         this.xPosition = xPosition;
         this.yPosition = yPosition;
     }
@@ -30,14 +27,6 @@ public class Bullet extends GameObject {
 
     public int getSpeed() {
         return BULLET_SPEED;
-    }
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
     }
 
     public float getYPosition() {
