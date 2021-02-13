@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class PlayerDetails implements Serializable {
+public class PlayerDetails implements Serializable, Comparable {
     private int score;
     private String name;
 
@@ -33,5 +33,11 @@ public class PlayerDetails implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        PlayerDetails other = (PlayerDetails)o;
+        return Integer.compare(other.score,this.score);
     }
 }

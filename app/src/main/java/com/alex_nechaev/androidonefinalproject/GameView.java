@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -95,7 +93,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameOverDialog.setContentView(R.layout.gameover_menu);
         gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
-        TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score);
+        TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score_text_vew);
         playerScoreTextView.setText("Your score is: "+score);
         EditText playerNameEditText = gameOverDialog.findViewById(R.id.player_name_edit_text);
         ImageButton submitBtn = gameOverDialog.findViewById(R.id.submit_btn);

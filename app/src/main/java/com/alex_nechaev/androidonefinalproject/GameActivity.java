@@ -138,7 +138,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 int score = gameView.getScore();
 
                 final Dialog gameOverDialog;
@@ -148,7 +147,7 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                 gameOverDialog.setContentView(R.layout.gameover_menu);
                 gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
-                TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score);
+                TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score_text_vew);
                 playerScoreTextView.setText("Your score is: " + score);
                 EditText playerNameEditText = gameOverDialog.findViewById(R.id.player_name_edit_text);
 

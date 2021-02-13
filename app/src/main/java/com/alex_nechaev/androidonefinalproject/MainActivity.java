@@ -40,13 +40,17 @@ public class MainActivity extends AppCompatActivity {
         scoreImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<PlayerDetails> playerDetails = (ArrayList<PlayerDetails>) FileManager.readFromFile(MainActivity.this,GameActivity.PLAYER_DETAILS);
-                if(playerDetails == null){
-                    playerDetails = new ArrayList<PlayerDetails>();
-                }
-                for(PlayerDetails pd: playerDetails){
-                    Log.d("pd", pd.toString());
-                }
+//                ArrayList<PlayerDetails> playerDetails = (ArrayList<PlayerDetails>) FileManager.readFromFile(MainActivity.this,GameActivity.PLAYER_DETAILS);
+//                if(playerDetails == null){
+//                    playerDetails = new ArrayList<PlayerDetails>();
+//                }
+//                for(PlayerDetails pd: playerDetails){
+//                    Log.d("pd", pd.toString());
+//                }
+
+                Intent intent = new Intent(MainActivity.this,TableScoreActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
