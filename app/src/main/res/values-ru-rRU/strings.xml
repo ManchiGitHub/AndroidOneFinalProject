@@ -5,12 +5,12 @@
     <string name="player">ИГРОК</string>
     <string name="enter_name">"Введите ваше имя "</string>
     <string name="your_score_is">Ваш счет</string>
-    <string name="score">ТОЧКИ</string>
+    <string name="score">ОЧКИ</string>
     <string name="play">ИГРАТЬ</string>
-    <string name="table">ТАБЛИЦА</string>
-    <string name="score_as">" ОЧКОВ"</string>
     <string name="game">"ИГРА "</string>
     <string name="over">ОКОНЧЕНА</string>
-    <string name="exit">ВЫХОД?</string>
+    <string name="exit">ВЫХОДИТЬ?</string>
     <string name="submit">ОТПРАВИТЬ</string>
+    <string name="table">" ОЧКОВ"</string>
+    <string name="score_as">ТАБЛИЦА</string>
 </resources>
