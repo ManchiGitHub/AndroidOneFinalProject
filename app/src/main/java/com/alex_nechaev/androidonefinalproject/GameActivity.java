@@ -130,6 +130,7 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                     @Override
                     public void onClick(View v) {
                         gameView.setPauseButtonPressed(false);
+                        pauseDialog.dismiss();
                         exitDialog.dismiss();
                     }
                 });
