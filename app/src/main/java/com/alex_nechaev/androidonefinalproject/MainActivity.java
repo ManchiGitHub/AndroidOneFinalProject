@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -25,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sp;
 
-    static MediaPlayer mp;
-    static int lastPositionOfPausedMusic;
+    public static MediaPlayer mp;
 
     @Override
     public void onBackPressed() {
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         // This if assures that the music will be created only one throughout the game
         if (mp == null) {
-            mp = MediaPlayer.create(this, R.raw.main_game_theme);
+            mp = MediaPlayer.create(this, R.raw.main_activity_music);
             mp.setLooping(true); // Set looping
             mp.setVolume(1.0f, 1.0f);
         }
@@ -89,17 +87,32 @@ public class MainActivity extends AppCompatActivity {
                 if (isMute) {
                     sp.edit().putBoolean(IS_MUTE_KEY, true).commit();
                     volumeIv.setImageResource(R.drawable.volume_off);
-                    lastPositionOfPausedMusic = mp.getCurrentPosition();
                     mp.pause();
                 }
                 else {
                     sp.edit().putBoolean(IS_MUTE_KEY, false).commit();
                     volumeIv.setImageResource(R.drawable.volume_on);
-                    mp.seekTo(lastPositionOfPausedMusic);
                     mp.start();
                 }
             }
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (!isMute) {
+            mp.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!isMute) {
+            mp.start();
+        }
+    }
 }

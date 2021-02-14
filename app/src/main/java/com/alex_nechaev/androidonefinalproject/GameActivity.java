@@ -3,6 +3,7 @@ package com.alex_nechaev.androidonefinalproject;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,9 +21,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.alex_nechaev.androidonefinalproject.MainActivity.mp;
-import static com.alex_nechaev.androidonefinalproject.MainActivity.lastPositionOfPausedMusic;
-
 //This activity runs when the "PLAY GAME" button is pressed.
 public class GameActivity extends AppCompatActivity implements GameListener {
 
@@ -33,6 +31,7 @@ public class GameActivity extends AppCompatActivity implements GameListener {
     Dialog pauseDialog;
     public static String PLAYER_DETAILS = "playerDetails";
     SharedPreferences sp;
+    MediaPlayer mp;
     boolean isMute;
 
     @Override
@@ -40,6 +39,17 @@ public class GameActivity extends AppCompatActivity implements GameListener {
         super.onCreate(savedInstanceState);
 
         sp = getSharedPreferences(MainActivity.GAME_KEY, MODE_PRIVATE);
+        isMute = sp.getBoolean(MainActivity.IS_MUTE_KEY, false);
+
+        if (mp == null) {
+            mp = MediaPlayer.create(this, R.raw.game_activity_music);
+            mp.setLooping(true); // Set looping
+            mp.setVolume(1.0f, 1.0f);
+        }
+
+        if (!isMute) {
+            mp.start();
+        }
 
         //REMOVES THE NOTIFICATION BAR
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -130,7 +140,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
             }
         });
 
-        isMute = sp.getBoolean(MainActivity.IS_MUTE_KEY, false);
         ImageView volumeIv = pauseDialog.findViewById(R.id.volume_iv);
         if (isMute) {
             volumeIv.setImageResource(R.drawable.volume_off);
@@ -147,13 +156,11 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                 if (isMute) {
                     sp.edit().putBoolean(MainActivity.IS_MUTE_KEY, true).commit();
                     volumeIv.setImageResource(R.drawable.volume_off);
-                    lastPositionOfPausedMusic = mp.getCurrentPosition();
                     mp.pause();
                 }
                 else {
                     sp.edit().putBoolean(MainActivity.IS_MUTE_KEY, false).commit();
                     volumeIv.setImageResource(R.drawable.volume_on);
-                    mp.seekTo(lastPositionOfPausedMusic);
                     mp.start();
                 }
             }
@@ -211,8 +218,20 @@ public class GameActivity extends AppCompatActivity implements GameListener {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (!isMute) {
+            mp.pause();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if (!isMute) {
+            mp.start();
+        }
         gameView.resume();
     }
 }
