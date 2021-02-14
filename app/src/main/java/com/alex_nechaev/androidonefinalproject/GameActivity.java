@@ -2,6 +2,8 @@ package com.alex_nechaev.androidonefinalproject;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,17 +13,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
 
 //This activity runs when the "PLAY GAME" button is pressed.
 public class GameActivity extends AppCompatActivity implements GameListener {
@@ -32,10 +30,26 @@ public class GameActivity extends AppCompatActivity implements GameListener {
     ImageButton pauseBtn;
     Dialog pauseDialog;
     public static String PLAYER_DETAILS = "playerDetails";
+    SharedPreferences sp;
+    MediaPlayer mp;
+    boolean isMute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sp = getSharedPreferences(MainActivity.GAME_KEY, MODE_PRIVATE);
+        isMute = sp.getBoolean(MainActivity.IS_MUTE_KEY, false);
+
+        if (mp == null) {
+            mp = MediaPlayer.create(this, R.raw.game_activity_music);
+            mp.setLooping(true); // Set looping
+            mp.setVolume(1.0f, 1.0f);
+        }
+
+        if (!isMute) {
+            mp.start();
+        }
 
         //REMOVES THE NOTIFICATION BAR
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -125,6 +139,33 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                 });
             }
         });
+
+        ImageView volumeIv = pauseDialog.findViewById(R.id.volume_iv);
+        if (isMute) {
+            volumeIv.setImageResource(R.drawable.volume_off);
+        }
+        else {
+            volumeIv.setImageResource(R.drawable.volume_on);
+        }
+
+        volumeIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isMute = !isMute;
+
+                if (isMute) {
+                    sp.edit().putBoolean(MainActivity.IS_MUTE_KEY, true).commit();
+                    volumeIv.setImageResource(R.drawable.volume_off);
+                    mp.pause();
+                }
+                else {
+                    sp.edit().putBoolean(MainActivity.IS_MUTE_KEY, false).commit();
+                    volumeIv.setImageResource(R.drawable.volume_on);
+                    mp.start();
+                }
+            }
+        });
+
         setContentView(gameLayout);
     }
 
@@ -179,8 +220,20 @@ public class GameActivity extends AppCompatActivity implements GameListener {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (!isMute) {
+            mp.pause();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if (!isMute) {
+            mp.start();
+        }
         gameView.resume();
     }
 }
