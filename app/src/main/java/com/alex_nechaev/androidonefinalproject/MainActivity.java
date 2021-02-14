@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sp;
 
-    MediaPlayer mp;
-    int lastPositionOfPausedMusic;
+    static MediaPlayer mp;
+    static int lastPositionOfPausedMusic;
 
     @Override
     public void onBackPressed() {
@@ -45,9 +46,13 @@ public class MainActivity extends AppCompatActivity {
         final ImageView volumeIv = findViewById(R.id.volume_iv);
 
         isMute = sp.getBoolean(IS_MUTE_KEY, false);
-        mp = MediaPlayer.create(this, R.raw.main_game_theme);
-        mp.setLooping(true); // Set looping
-        mp.setVolume(1.0f, 1.0f);
+
+        // This if assures that the music will be created only one throughout the game
+        if (mp == null) {
+            mp = MediaPlayer.create(this, R.raw.main_game_theme);
+            mp.setLooping(true); // Set looping
+            mp.setVolume(1.0f, 1.0f);
+        }
 
         if (!isMute) {
             mp.start();

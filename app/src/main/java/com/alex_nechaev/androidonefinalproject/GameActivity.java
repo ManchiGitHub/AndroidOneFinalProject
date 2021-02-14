@@ -20,6 +20,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.alex_nechaev.androidonefinalproject.MainActivity.mp;
+import static com.alex_nechaev.androidonefinalproject.MainActivity.lastPositionOfPausedMusic;
+
 //This activity runs when the "PLAY GAME" button is pressed.
 public class GameActivity extends AppCompatActivity implements GameListener {
 
