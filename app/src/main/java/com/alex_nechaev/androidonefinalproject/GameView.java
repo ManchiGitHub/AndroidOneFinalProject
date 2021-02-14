@@ -2,6 +2,7 @@ package com.alex_nechaev.androidonefinalproject;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,13 +11,14 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,9 +32,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Paint scorePaint;
     private int yTransition;
 
-    private Dialog gameOverDialog;
+    public Dialog getGameOverDialog() {
+        return gameOverDialog;
+    }
 
-    private volatile int score ;
+    private Dialog gameOverDialog;
+    TextView playerScoreTextView;
+    List<PlayerDetails> playerDetails;
+
+    private int score ;
     double deltaScore;
 
     long enemyTimer, heartTimer, shieldTimer, onShieldTimer, explosionTimer, coinTimer, bulletTimer;
@@ -86,24 +94,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         coinObjects = new CopyOnWriteArrayList<GameObject>();
         bullets = new CopyOnWriteArrayList<GameObject>();
 
-
         gameOverDialog = new Dialog(context, R.style.Theme_AppCompat_Light_Dialog_Alert);
         gameOverDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         gameOverDialog.setCancelable(false);
         gameOverDialog.setContentView(R.layout.gameover_menu);
         gameOverDialog.getWindow().getAttributes().windowAnimations = R.style.SlidingDialogAnimation;
 
-        TextView playerScoreTextView = gameOverDialog.findViewById(R.id.player_score_text_vew);
-        playerScoreTextView.setText("Your score is: "+score);
+        playerScoreTextView = gameOverDialog.findViewById(R.id.player_score_text_vew);
+
         EditText playerNameEditText = gameOverDialog.findViewById(R.id.player_name_edit_text);
-        ImageButton submitBtn = gameOverDialog.findViewById(R.id.submit_btn);
+        Button submitBtn = gameOverDialog.findViewById(R.id.submit_btn);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "SUBMIT PRESSED", Toast.LENGTH_SHORT).show();
+                String playerName;
+
+                if (!playerNameEditText.getText().toString().equals(""))
+                    playerName = playerNameEditText.getText().toString();
+                else
+                    playerName = "Player" + System.currentTimeMillis();
+
+                playerDetails = (ArrayList<PlayerDetails>) FileManager.readFromFile(context, GameActivity.PLAYER_DETAILS);
+                if (playerDetails == null) {
+                    playerDetails = new ArrayList<PlayerDetails>();
+                }
+                playerDetails.add(new PlayerDetails(score, playerName));
+                FileManager.writeToFile(context, playerDetails, GameActivity.PLAYER_DETAILS);
+                playerNameEditText.setText("");
+
+                Intent intent = new Intent(context, MainActivity.class);
+                gameOverDialog.dismiss();
+                context.startActivity(intent);
             }
         });
-
 
         random = new Random();
         gameListenerDialogBox=((GameListener)context);
@@ -177,99 +200,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             if (!isPauseButtonPressed) {
                 player.move(playerXPosition, playerYPosition);
-                for (GameObject bullet : bullets) {
-                    bullet.move();
-                    if (bullet.getYPosition() + bullet.getSpriteHeight() < 0) {
-                        bullets.remove(bullet);
-                    }
-                }
-                for (GameObject ho : heartObjects) {
-                    ho.move();
-                    if (ho.getYPosition() > GameActivity.SCREEN_HEIGHT) {
-                        heartObjects.remove(ho);
-                    }
-                    if (player.isCollision(ho)) {
-                        addHeart();
-                        heartObjects.remove(ho);
-                    }
-                }
 
-                for (GameObject co : coinObjects) {
-                    co.move();
-                    if (co.getYPosition() > GameActivity.SCREEN_HEIGHT) {
-                        coinObjects.remove(co);
-                    }
-                    if (player.isCollision(co)) {
-                        coinObjects.remove(co);
-                        score += 1000;
-                    }
-                }
-
-                for (GameObject so : shieldObjects) {
-                    so.move();
-                    if (so.getYPosition() > GameActivity.SCREEN_HEIGHT) {
-                        shieldObjects.remove(so);
-                    }
-                    if (player.isCollision(so)) {
-                        player.setHasShield(true);
-                        shieldObjects.remove(so);
-                    }
-                }
-
-                for (GameObject eo : enemyObjects) {
-                    eo.move();
-                    if (eo.getYPosition() > GameActivity.SCREEN_HEIGHT) {
-                        enemyObjects.remove(eo);
-                    }
-                    if (player.isCollision(eo)) {
-                        if (player.hasShield()) {
-                            player.setHasShield(false);
-                        } else {
-                            player.setHasExploded(true);
-                            removeHeart();
-                        }
-                        enemyObjects.remove(eo);
-                    }
-
-                    for (GameObject bullet : bullets) {
-                        if (bullet.isCollision(eo)) {
-                            explosions.setxPosition(eo.xPosition);
-                            explosions.setyPosition(eo.yPosition);
-                            explosions.setExplode(true);
-                            bullets.remove(bullet);
-                            enemyObjects.remove(eo);
-                            score += 300;
-                        }
-                    }
-                }
+                bulletScreenMovement();
+                heartScreenMovement();
+                coinScreenMovement();
+                shieldScreenMovement();
+                enemyScreenMovement();
             }
 
             if (canvas != null) {
 
                 drawBackground(canvas);
+                drawHearts(canvas);
+                drawCoins(canvas);
+                drawShields(canvas);
+                drawEnemies(canvas);
+                drawBullets(canvas);
 
-                for (GameObject ho : heartObjects) {
-                    ho.draw(canvas);
-                }
-                for (GameObject co : coinObjects) {
-                    co.draw(canvas);
-                }
-                for (GameObject so : shieldObjects) {
-                    so.draw(canvas);
-                }
-                for (GameObject eo : enemyObjects) {
-                    eo.draw(canvas);
-                }
-                for (GameObject bullet : bullets) {
-                    bullet.draw(canvas);
-                }
                 if (explosions.isExplode()) {
                     explosions.draw(canvas);
                 }
                 if(!isGameOver){
                     player.draw(canvas);
                 }
-                drawHeart(canvas);
+                drawHeartAmount(canvas);
                 drawScore(canvas);
             }
         }
@@ -309,7 +263,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void drawHeart(Canvas canvas) {
+    private void drawHeartAmount(Canvas canvas) {
         int top = 50;
         if (this.heartIndex == 3) {
             canvas.drawBitmap(Bitmaps.heartImg, 20, top, null);
@@ -321,7 +275,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         } else if (this.heartIndex == 1) {
             canvas.drawBitmap(Bitmaps.heartImg, 20, top, null);
         }
-
     }
 
     private void addHeart() {
@@ -338,6 +291,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void gameOver() {
         clearGameObjects();
+        playerScoreTextView.setText(getResources().getString(R.string.YOUR_SCORE_IS)+score);
+        isGameOver = true;
         gameListenerDialogBox.onGameOver();
     }
 
@@ -486,5 +441,112 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setHasExited(boolean hasExited) {
         this.hasExited = hasExited;
+    }
+
+    private void enemyScreenMovement() {
+        for (GameObject eo : enemyObjects) {
+            eo.move();
+            if (eo.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                enemyObjects.remove(eo);
+            }
+            if (player.isCollision(eo)) {
+                if (player.hasShield()) {
+                    player.setHasShield(false);
+                } else {
+                    player.setHasExploded(true);
+                    removeHeart();
+                }
+                enemyObjects.remove(eo);
+            }
+
+            for (GameObject bullet : bullets) {
+                if (bullet.isCollision(eo)) {
+                    explosions.setxPosition(eo.xPosition);
+                    explosions.setyPosition(eo.yPosition);
+                    explosions.setExplode(true);
+                    bullets.remove(bullet);
+                    enemyObjects.remove(eo);
+                    score += 300;
+                }
+            }
+        }
+    }
+
+    private void shieldScreenMovement() {
+        for (GameObject so : shieldObjects) {
+            so.move();
+            if (so.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                shieldObjects.remove(so);
+            }
+            if (player.isCollision(so)) {
+                player.setHasShield(true);
+                shieldObjects.remove(so);
+            }
+        }
+    }
+
+    private void coinScreenMovement() {
+        for (GameObject co : coinObjects) {
+            co.move();
+            if (co.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                coinObjects.remove(co);
+            }
+            if (player.isCollision(co)) {
+                coinObjects.remove(co);
+                score += 1000;
+            }
+        }
+    }
+
+    private void heartScreenMovement() {
+        for (GameObject ho : heartObjects) {
+            ho.move();
+            if (ho.getYPosition() > GameActivity.SCREEN_HEIGHT) {
+                heartObjects.remove(ho);
+            }
+            if (player.isCollision(ho)) {
+                addHeart();
+                heartObjects.remove(ho);
+            }
+        }
+    }
+
+    private void bulletScreenMovement() {
+        for (GameObject bullet : bullets) {
+            bullet.move();
+            if (bullet.getYPosition() + bullet.getSpriteHeight() < 0) {
+                bullets.remove(bullet);
+            }
+        }
+    }
+
+    private void drawBullets(Canvas canvas) {
+        for (GameObject bullet : bullets) {
+            bullet.draw(canvas);
+        }
+    }
+
+    private void drawEnemies(Canvas canvas) {
+        for (GameObject eo : enemyObjects) {
+            eo.draw(canvas);
+        }
+    }
+
+    private void drawShields(Canvas canvas) {
+        for (GameObject so : shieldObjects) {
+            so.draw(canvas);
+        }
+    }
+
+    private void drawCoins(Canvas canvas) {
+        for (GameObject co : coinObjects) {
+            co.draw(canvas);
+        }
+    }
+
+    private void drawHearts(Canvas canvas) {
+        for (GameObject ho : heartObjects) {
+            ho.draw(canvas);
+        }
     }
 }

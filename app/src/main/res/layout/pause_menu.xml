@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Theme.Transparent"
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
     android:background="@drawable/game_background">
 
-    <ImageView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="25dp"
         android:gravity="center"
-        android:src="@drawable/pause_img"/>
+        android:text="@string/pause"
+        android:textSize="55sp"
+        android:textStyle="bold"
+        android:textColor="@color/yellow_light"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,35 +27,37 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-        <ImageButton
+
+        <Button
             android:id="@+id/resume_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_play"
-            android:background="@null"/>
+            android:background="@drawable/btn_play_selector"
+            app:backgroundTint="@null" />
+
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-        <ImageButton
+        <Button
             android:id="@+id/replay_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_replay"
-            android:background="@null"/>
+            app:backgroundTint="@null"
+            android:background="@drawable/btn_replay_selector"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-        <ImageButton
+        <Button
             android:id="@+id/exit_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/btn_exit"
-            android:background="@null"/>
+            app:backgroundTint="@null"
+            android:background="@drawable/btn_exit_selector"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"

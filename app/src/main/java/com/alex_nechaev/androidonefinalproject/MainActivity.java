@@ -10,6 +10,7 @@ import android.view.View;
 
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         
         setContentView(R.layout.activity_main);
 
-        ImageButton playImgBtn = findViewById(R.id.play_img_btn);
+        Button playImgBtn = findViewById(R.id.play_img_btn);
         playImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton scoreImgBtn = findViewById(R.id.score_img_btn);
+        Button scoreImgBtn = findViewById(R.id.score_img_btn);
         scoreImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

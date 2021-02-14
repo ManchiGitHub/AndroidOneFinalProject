@@ -19,7 +19,7 @@ public class Bitmaps {
         options.inScaled = false;
 
         playerImg = getBitmap(resources, R.drawable.player_rocket);
-        playerShieldImg = getBitmap(resources, R.drawable.player_shield);
+        playerShieldImg = getBitmap(resources, R.drawable.game_effect_shield);
         blueAlienImg = getBitmap(resources, R.drawable.alien_blue);
         greenAlienImg = getBitmap(resources, R.drawable.alien_green);
         robotAlienImg = getBitmap(resources, R.drawable.alien_robot);
@@ -28,15 +28,15 @@ public class Bitmaps {
         coinImg = getBitmap(resources, R.drawable.supply_coin);
         shieldImg = getBitmap(resources, R.drawable.supply_shield);
         heartImg = getBitmap(resources, R.drawable.supply_heart);
-        unscaledStars = getBitmap(resources, R.drawable.stars);
+        unscaledStars = getBitmap(resources, R.drawable.game_effect_stars);
         unscaledGalaxyBackground = getBitmap(resources, R.drawable.game_background);
         starsImg = Bitmap.createScaledBitmap(unscaledStars, GameActivity.SCREEN_WIDTH, GameActivity.SCREEN_HEIGHT, true);
         galaxyBackgroundImg = getBitmap(resources, R.drawable.game_background);
         bulletLv1Img = getBitmap(resources, R.drawable.bullet_level_1);
         bulletLv2Img = getBitmap(resources, R.drawable.bullet_level_2);
         bulletLv3Img = getBitmap(resources, R.drawable.bullet_level_3);
-        explosionImg = getBitmap(resources, R.drawable.player_explosion);
-        enemyExplosionImg = getBitmap(resources, R.drawable.explosions_rs);
+        explosionImg = getBitmap(resources, R.drawable.game_effect_player_explosion);
+        enemyExplosionImg = getBitmap(resources, R.drawable.game_effect_explosion);
     }
 
     private Bitmap getBitmap(Resources resources, int drawableRes) {

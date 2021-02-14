@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">In Space Survivor</string>
-    <string name="pause">Pause</string>
+    <string name="pause">PAUSE</string>
     <string name="player">PLAYER</string>
     <string name="enter_name">Enter Your Name</string>
+    <string name="YOUR_SCORE_IS">Your score is: </string>
+    <string name="score">SCORE</string>
+    <string name="play">PLAY</string>
+    <string name="table">TABLE</string>
+    <string name="exit">EXIT?</string>
+    <string name="game">GAME</string>
+    <string name="over">OVER</string>
+    <string name="submit">SUBMIT</string>
 </resources>
