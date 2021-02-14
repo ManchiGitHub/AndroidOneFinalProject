@@ -14,7 +14,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -40,7 +39,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     TextView playerScoreTextView;
     List<PlayerDetails> playerDetails;
 
-    private int score ;
+    private int score;
     double deltaScore;
 
     long enemyTimer, heartTimer, shieldTimer, onShieldTimer, explosionTimer, coinTimer, bulletTimer;
@@ -129,7 +128,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         });
 
         random = new Random();
-        gameListenerDialogBox=((GameListener)context);
+        gameListenerDialogBox = ((GameListener) context);
 
         gameThread = new GameThread(this);
 
@@ -200,7 +199,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             if (!isPauseButtonPressed) {
                 player.move(playerXPosition, playerYPosition);
-
                 bulletScreenMovement();
                 heartScreenMovement();
                 coinScreenMovement();
@@ -209,7 +207,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (canvas != null) {
-
                 drawBackground(canvas);
                 drawHearts(canvas);
                 drawCoins(canvas);
@@ -220,7 +217,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 if (explosions.isExplode()) {
                     explosions.draw(canvas);
                 }
-                if(!isGameOver){
+                if (!isGameOver) {
                     player.draw(canvas);
                 }
                 drawHeartAmount(canvas);
@@ -229,7 +226,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    void replayGame(){
+    void replayGame() {
         clearGameObjects();
         this.score = 0;
         player.setHasShield(false);
@@ -240,7 +237,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawScore(Canvas canvas) {
-        canvas.drawText("SCORE: " + score, Bitmaps.heartImg.getWidth() * 5, 100, scorePaint);
+        canvas.drawText(getResources().getString(R.string.score) + " : " + score, Bitmaps.heartImg.getWidth() * 5, 100, scorePaint);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -285,13 +282,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public int getScore() {
-        return score;
-    }
-
     private void gameOver() {
         clearGameObjects();
-        playerScoreTextView.setText(getResources().getString(R.string.YOUR_SCORE_IS)+score);
+        playerScoreTextView.setText(getResources().getString(R.string.your_score_is) +": " + score);
         isGameOver = true;
         gameListenerDialogBox.onGameOver();
     }
@@ -315,7 +308,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             addBullet();
             addScore();
         }
-        if(isGameOver){
+        if (isGameOver) {
             gameOver();
         }
     }
@@ -333,7 +326,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void addScore() {
-        if(!isGameOver)
+        if (!isGameOver)
             score++;
     }
 
@@ -343,11 +336,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             this.deltaScore = score / 300;
         }
         if (currentHeartTimer - bulletTimer > 900 - deltaScore && !isPauseButtonPressed) {
-            if(score <=30000) {
+            if (score <= 30000) {
                 bullets.add(new Bullet(Bitmaps.bulletLv1Img, playerXPosition - Bitmaps.bulletLv1Img.getWidth() / 2, playerYPosition));
-            }else if(score <=60000){
+            } else if (score <= 60000) {
                 bullets.add(new Bullet(Bitmaps.bulletLv2Img, playerXPosition - Bitmaps.bulletLv2Img.getWidth() / 2, playerYPosition));
-            }else{
+            } else {
                 bullets.add(new Bullet(Bitmaps.bulletLv3Img, playerXPosition - Bitmaps.bulletLv3Img.getWidth() / 2, playerYPosition));
             }
             bulletTimer = System.currentTimeMillis();
@@ -386,7 +379,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if (currentEnemyTimer - enemyTimer > 1700 - (this.deltaScore*1.2) && !isPauseButtonPressed) {
+        if (currentEnemyTimer - enemyTimer > 1700 - (this.deltaScore * 1.2) && !isPauseButtonPressed) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
             enemyTimer = System.currentTimeMillis();
         }
@@ -422,11 +415,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void resumeOnPause() {
-        resume();
-        surfaceCreated(getHolder());
-    }
-
     public boolean isGameOver() {
         return isGameOver;
     }
@@ -437,10 +425,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public boolean isHasExited() {
         return hasExited;
-    }
-
-    public void setHasExited(boolean hasExited) {
-        this.hasExited = hasExited;
     }
 
     private void enemyScreenMovement() {
@@ -458,7 +442,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 enemyObjects.remove(eo);
             }
-
             for (GameObject bullet : bullets) {
                 if (bullet.isCollision(eo)) {
                     explosions.setxPosition(eo.xPosition);

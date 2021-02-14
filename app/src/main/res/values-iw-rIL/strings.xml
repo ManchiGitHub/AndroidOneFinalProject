@@ -3,5 +3,14 @@
     <string name="app_name">In Space Survivor</string>
     <string name="enter_name">הכנס את שמך</string>
     <string name="player">שחקן</string>
-    <string name="pause">השהה</string>
+    <string name="pause">הפסקה</string>
+    <string name="score">ניקוד</string>
+    <string name="play">שחק</string>
+    <string name="table">השגים</string>
+    <string name="exit">\?לצאת</string>
+    <string name="game">המשחק</string>
+    <string name="over">נגמר</string>
+    <string name="submit">שלח</string>
+    <string name="score_as">לוח</string>
+    <string name="your_score_is">הניקוד שלך הוא:</string>
 </resources>
