@@ -40,9 +40,18 @@ public class TableScoreActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.score_list);
 
         List<PlayerDetails> playerDetails = (List<PlayerDetails>) FileManager.readFromFile(TableScoreActivity.this,GameActivity.PLAYER_DETAILS);
+//        List<PlayerDetails> playerDetails = null;
         if(playerDetails == null){
             playerDetails = new ArrayList<PlayerDetails>();
         }
+
+//        playerDetails.add(new PlayerDetails(533123,"אלכס ניצ'ייב"));
+//        playerDetails.add(new PlayerDetails(523123,"עמית שלו"));
+//        playerDetails.add(new PlayerDetails(313463,"מרקו קציב"));
+//        playerDetails.add(new PlayerDetails(223673,"חיים חיימון"));
+//        playerDetails.add(new PlayerDetails(13363,"מושן שטרן"));
+//        playerDetails.add(new PlayerDetails(54123,"מיצי מיצי"));
+//        playerDetails.add(new PlayerDetails(43123,"רבקה מלכי"));
         Collections.sort(playerDetails);
 
         PlayerDetailsAdapter playerDetailsAdapter = new PlayerDetailsAdapter(playerDetails);

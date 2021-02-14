@@ -24,6 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private final int COIN_TIME_RATE = 13000;
+    private final int HEART_TIME_RATE = 31000;
+    private final int SHIELD_TIME_RATE = 60000;
+    private final int ENEMY_DELTA_RATE = 4;
+    private final int ENEMY_TIME_RATE = 1700;
     private final int MAX_HEARTS = 3;
     private final int BACKGROUND_SPEED = 40;
 
@@ -351,7 +356,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentHeartTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentHeartTimer - heartTimer > 32200 && !isPauseButtonPressed) {
+        if (currentHeartTimer - heartTimer > HEART_TIME_RATE && !isPauseButtonPressed) {
             heartObjects.add(new Heart(xPosition, yPosition, (xPosition % 10) + 5));
             heartTimer = System.currentTimeMillis();
         }
@@ -361,7 +366,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentShieldTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentShieldTimer - shieldTimer > 47700 && !isPauseButtonPressed) {
+        if (currentShieldTimer - shieldTimer > SHIELD_TIME_RATE && !isPauseButtonPressed) {
             shieldObjects.add(new Shield(xPosition, yPosition, (xPosition % 10) + 5));
             shieldTimer = System.currentTimeMillis();
         }
@@ -371,7 +376,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         long currentCoinTimer = System.currentTimeMillis();
         int xPosition = random.nextInt(getWidth() - 100);
         int yPosition = getHeight() / 6 * (-1);
-        if (currentCoinTimer - coinTimer > 13100 && !isPauseButtonPressed) {
+        if (currentCoinTimer - coinTimer > COIN_TIME_RATE && !isPauseButtonPressed) {
             coinObjects.add(new Coin(xPosition, yPosition, (xPosition % 10) + 5));
             coinTimer = System.currentTimeMillis();
         }
@@ -379,7 +384,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void addEnemyObject() {
         long currentEnemyTimer = System.currentTimeMillis();
-        if (currentEnemyTimer - enemyTimer > 1700 - (this.deltaScore * 1.2) && !isPauseButtonPressed) {
+        if (currentEnemyTimer - enemyTimer > ENEMY_TIME_RATE - (this.deltaScore * ENEMY_DELTA_RATE) && !isPauseButtonPressed) {
             enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
             enemyTimer = System.currentTimeMillis();
         }
