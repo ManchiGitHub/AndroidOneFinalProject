@@ -2,6 +2,7 @@ package com.alex_nechaev.androidonefinalproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -28,7 +29,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Dialog exitDialog;
+        exitDialog = new Dialog(MainActivity.this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        exitDialog.setCancelable(false);
+        exitDialog.setContentView(R.layout.exit_menu);
+        exitDialog.show();
+
+        Button applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishAffinity();
+            }
+        });
+
+        Button cancelBtn = exitDialog.findViewById(R.id.exit_no_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exitDialog.dismiss();
+            }
+        });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
