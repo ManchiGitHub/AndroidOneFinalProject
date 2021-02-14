@@ -7,7 +7,7 @@ public class EnemyFactory {
 private static Random random = new Random();
 
     public static GameObject createEnemy(eEnemyType enemyType,GameView gameView,int score){
-        int xPosition = random.nextInt(gameView.getWidth()-100);
+        int xPosition = random.nextInt(gameView.getWidth()-120);
         int yPosition = gameView.getHeight()/8*(-1);
         double deltaScore = score/20000;
         switch(enemyType){

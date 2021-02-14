@@ -25,7 +25,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.4" />
 
         <Button
             android:id="@+id/play_img_btn"
@@ -37,13 +37,13 @@
             android:text="@string/play"
             android:textColor="@color/dark_purple"
             android:textStyle="bold"
-            android:textSize="30dp"
+            android:textSize="25dp"
             app:backgroundTint="@null"/>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.4" />
 
         <Button
             android:id="@+id/score_img_btn"
@@ -55,13 +55,13 @@
             android:text="@string/score"
             android:textColor="@color/dark_purple"
             android:textStyle="bold"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:backgroundTint="@null"/>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.4" />
 
     </LinearLayout>
 

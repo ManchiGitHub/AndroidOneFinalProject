@@ -136,7 +136,9 @@ public class GameActivity extends AppCompatActivity implements GameListener {
             public void run() {
                 if(gameView.isGameOver()) {
                     gameView.pause();
-                    gameView.getGameOverDialog().show();
+                    if(!gameView.isHasExited()) {
+                        gameView.getGameOverDialog().show();
+                    }
                 }
             }
         });

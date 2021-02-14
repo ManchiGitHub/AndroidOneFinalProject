@@ -121,8 +121,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 FileManager.writeToFile(context, playerDetails, GameActivity.PLAYER_DETAILS);
                 playerNameEditText.setText("");
 
-                Intent intent = new Intent(context, MainActivity.class);
                 gameOverDialog.dismiss();
+                Intent intent = new Intent(context, MainActivity.class);
                 context.startActivity(intent);
             }
         });
@@ -250,16 +250,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void removeHeart() {
-        if (heartIndex == 1) {
-            this.heartIndex--;
-            isGameOver = true;
-        } else {
-            if (heartIndex != 0)
-                this.heartIndex--;
-        }
-    }
-
     private void drawHeartAmount(Canvas canvas) {
         int top = 50;
         if (this.heartIndex == 3) {
@@ -279,6 +269,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             score += 2000;
         } else if (heartIndex != 3) {
             heartIndex++;
+        }
+    }
+
+    private void removeHeart() {
+        if (heartIndex == 1) {
+            this.heartIndex--;
+            isGameOver = true;
+        } else {
+            if (heartIndex != 0)
+                this.heartIndex--;
         }
     }
 
