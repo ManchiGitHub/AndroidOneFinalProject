@@ -2,8 +2,8 @@ package com.alex_nechaev.androidonefinalproject;
 
 public class BlueAlien extends GameObject{
 
-    boolean left = true, right = false;
-    int moves = 0;
+    private boolean left = true, right = false;
+    private int moves = 0;
 
     public BlueAlien(float xPosition, float yPosition, int speed) {
         super(Bitmaps.blueAlienImg, xPosition, yPosition, speed);
