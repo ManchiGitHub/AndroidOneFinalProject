@@ -3,9 +3,12 @@ package com.alex_nechaev.androidonefinalproject;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -66,8 +69,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private List<GameObject> bullets;
     private int heartIndex = MAX_HEARTS;
 
+    SharedPreferences sp;
+
+    SoundPool shieldSound;
+    SoundPool coinSound;
+    SoundPool explosionSound;
+    SoundPool heartSound;
+
+    int coinSoundId;
+    int explosionSoundId;
+    int shieldSoundId;
+    int heartSoundId;
+
     public GameView(Context context) {
         super(context);
+
+        sp = context.getSharedPreferences(MainActivity.GAME_KEY, Context.MODE_PRIVATE);
 
         enemyTimer = heartTimer = shieldTimer = coinTimer = System.currentTimeMillis();
         isPauseButtonPressed = false;
@@ -131,6 +148,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameListenerDialogBox = ((GameListener) context);
 
         gameThread = new GameThread(this);
+
+        coinSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        explosionSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        shieldSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+        heartSound = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+
+        coinSoundId = coinSound.load(context, R.raw.coin_sound_effect, 1);
+        explosionSoundId = explosionSound.load(context, R.raw.explosion_sound_effect, 1);
+        shieldSoundId = shieldSound.load(context, R.raw.shield_sound_effect, 1);
+        heartSoundId = heartSound.load(context, R.raw.health_sound_effect, 1);
 
         holder = getHolder();
         holder.addCallback(this);
@@ -437,6 +464,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 if (player.hasShield()) {
                     player.setHasShield(false);
                 } else {
+                    if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
+                        explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
+                    }
+
+
                     player.setHasExploded(true);
                     removeHeart();
                 }
@@ -444,6 +476,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             for (GameObject bullet : bullets) {
                 if (bullet.isCollision(eo)) {
+                    if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
+                        explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
+                    }
+
+
                     explosions.setxPosition(eo.xPosition);
                     explosions.setyPosition(eo.yPosition);
                     explosions.setExplode(true);
@@ -462,6 +499,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 shieldObjects.remove(so);
             }
             if (player.isCollision(so)) {
+                if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
+                    shieldSound.play(shieldSoundId, 1, 1, 0, 0, 1);
+                }
+
                 player.setHasShield(true);
                 shieldObjects.remove(so);
             }
@@ -475,6 +516,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 coinObjects.remove(co);
             }
             if (player.isCollision(co)) {
+                if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
+                    coinSound.play(coinSoundId, 1, 1, 0, 0, 1);
+                }
+
                 coinObjects.remove(co);
                 score += 1000;
             }
@@ -488,6 +533,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 heartObjects.remove(ho);
             }
             if (player.isCollision(ho)) {
+                if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
+                    heartSound.play(heartSoundId, 1, 1, 0, 0, 1);
+                }
+
                 addHeart();
                 heartObjects.remove(ho);
             }
