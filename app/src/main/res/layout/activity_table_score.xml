@@ -11,10 +11,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="70dp"
         android:gravity="center"
         android:text="@string/score_as"
-        android:textSize="55sp"
+        android:textSize="50sp"
         android:textStyle="bold"
         android:textColor="@color/yellow_light"/>
     <TextView
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/table"
-        android:textSize="55sp"
+        android:textSize="50sp"
         android:textStyle="bold"
         android:textColor="@color/yellow_light"/>
 
