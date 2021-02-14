@@ -467,8 +467,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
                         explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
                     }
-
-
                     player.setHasExploded(true);
                     removeHeart();
                 }
@@ -479,8 +477,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
                         explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
                     }
-
-
                     explosions.setxPosition(eo.xPosition);
                     explosions.setyPosition(eo.yPosition);
                     explosions.setExplode(true);

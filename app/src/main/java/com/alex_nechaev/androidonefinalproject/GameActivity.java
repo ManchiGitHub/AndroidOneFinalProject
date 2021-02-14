@@ -116,8 +116,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                 if(!gameView.isHasExited()){
                     exitDialog.show();
                 }
-                pauseDialog.dismiss();
-
                 Button applyBtn = exitDialog.findViewById(R.id.exit_yes_btn);
                 applyBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,7 +126,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                         startActivity(intent);
                     }
                 });
-
                 Button cancelBtn = exitDialog.findViewById(R.id.exit_no_btn);
                 cancelBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
