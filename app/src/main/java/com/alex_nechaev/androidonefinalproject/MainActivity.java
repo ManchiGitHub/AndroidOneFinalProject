@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         if (mp == null) {
             mp = MediaPlayer.create(this, R.raw.main_activity_music);
             mp.setLooping(true); // Set looping
-            mp.setVolume(1.0f, 1.0f);
+            mp.setVolume(0.6f, 0.6f);
         }
 
         if (!isMute) {

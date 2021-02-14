@@ -465,7 +465,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     player.setHasShield(false);
                 } else {
                     if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
-                        explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
+                        explosionSound.play(explosionSoundId, 0.4f, 0.4f, 0, 0, 1);
                     }
 
 
@@ -477,7 +477,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (GameObject bullet : bullets) {
                 if (bullet.isCollision(eo)) {
                     if (!sp.getBoolean(MainActivity.IS_MUTE_KEY, false)) {
-                        explosionSound.play(explosionSoundId, 1, 1, 0, 0, 1);
+                        explosionSound.play(explosionSoundId, 0.4f, 0.4f, 0, 0, 1);
                     }
 
 
