@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -284,7 +285,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void gameOver() {
         clearGameObjects();
-        playerScoreTextView.setText(getResources().getString(R.string.your_score_is) +": " + score);
+        playerScoreTextView.setText(getResources().getString(R.string.your_score_is) + ": " + score);
         isGameOver = true;
         gameListenerDialogBox.onGameOver();
     }
@@ -384,6 +385,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             enemyTimer = System.currentTimeMillis();
         }
     }
+
+//    private void addEnemyObject() {
+//        double timeSet = 100 - (this.deltaScore * 1.2);
+//        if(timeSet > 40) {
+//            enemyTimer++;
+//        }
+//        if(enemyTimer % (int)(timeSet) == 0){
+//            Log.d("DELTA", ""+timeSet);
+//            enemyObjects.add(EnemyFactory.createEnemy(eEnemyType.randomEnemy(), GameView.this, score));
+//        }
+//    }
 
     private void checkShieldTimeOnPlayer() {
         if (player.hasShield()) {

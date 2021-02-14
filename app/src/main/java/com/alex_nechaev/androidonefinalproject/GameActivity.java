@@ -156,12 +156,12 @@ public class GameActivity extends AppCompatActivity implements GameListener {
         pauseBtn = new ImageButton(this);
         pauseBtn.setImageDrawable(getResources().getDrawable(R.drawable.btn_pause_selector));
         pauseBtn.setBackground(null);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(12, 12, 12, 12);
-
         pauseBtn.setLayoutParams(params);
-        gameWidgets.requestLayout();
 
+        gameWidgets.requestLayout();
         gameWidgets.addView(pauseBtn);
 
         gameLayout.addView(gameView);
