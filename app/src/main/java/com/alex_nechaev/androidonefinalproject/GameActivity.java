@@ -121,7 +121,6 @@ public class GameActivity extends AppCompatActivity implements GameListener {
                     @Override
                     public void onClick(View v) {
                         gameView.setPauseButtonPressed(true);
-                        gameView.setGameOver(true);
                         Intent intent = new Intent(GameActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
